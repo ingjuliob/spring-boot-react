@@ -1,7 +1,7 @@
 const BaseService = {
 
     URL() {
-        return 'https://gleaming-glass-313320.uc.r.appspot.com';
+        return 'http://localhost:8080';
     },
 
     _call_get(url) {

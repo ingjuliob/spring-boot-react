@@ -306,7 +306,9 @@ export default function ReprintFunc() {
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Domicilio').map(fEmbozo => (
-                              <Typography key="domicilioEmbozo" ref={domicilioEmbozo} className={classes.pos} color="textSecondary">{fEmbozo.embozo}</Typography>))
+                              <Typography key="domicilioEmbozo" ref={domicilioEmbozo} className={classes.pos} color="textSecondary">
+                                  {fEmbozo.embozo}
+                              </Typography>))
                           }
                         </Grid>
                         <Grid item lg={2}>

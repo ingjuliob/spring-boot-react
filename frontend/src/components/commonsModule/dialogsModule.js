@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CenteredGrid({ saveData, resultRequest, resultStatus, resultMsg, firstOpen, setFirstOpen, secondOpen, setSecondOpen, printScreen }) {
 
     // Entry params
-    let { option } = useParams();
+    let { option, origin } = useParams();
 
     // State variables
     const theme = useTheme();
