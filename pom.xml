@@ -37,6 +37,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
@@ -59,28 +60,18 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>${frontend-maven-plugin.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <workingDirectory>frontend</workingDirectory>
+                    <mainClass>com.baeldung.springbootreact.SpringBootReactApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node</id>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
+                            <goal>repackage</goal>
                         </goals>
-                        <configuration>
-                            <nodeVersion>${node.version}</nodeVersion>
-                            <yarnVersion>${yarn.version}</yarnVersion>
-                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
