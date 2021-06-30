@@ -6,10 +6,6 @@ import DischargeModule from './components/dischargeModule/dischargeModule';
 
 function App() {
 
-  console.log("URL");
-  console.log(`${process.env.PUBLIC_URL}`);
-  console.log(`${process.env.NODE_ENV}`);
-
   return (
     <Router basename={'/transaccional'}>
       <div>

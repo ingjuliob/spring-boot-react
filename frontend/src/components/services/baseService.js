@@ -1,7 +1,7 @@
 const BaseService = {
 
     URL() {
-        return 'http://localhost:8080';
+        return 'http://ard032vlncap.ar.hsbc:21228/sacweb/control';
     },
 
     _call_get(url) {
