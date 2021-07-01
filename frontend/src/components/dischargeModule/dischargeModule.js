@@ -18,6 +18,7 @@ import Typography from "@material-ui/core/Typography";
 
 // services
 import BaseService from '../services/baseService';
+import UtilsService from "../services/utilsService";
 
 // start css
 const useStyles = makeStyles(() => ({
@@ -50,13 +51,18 @@ export default function DischargeFunc() {
   const classes = useStyles();
 
   // Funcion para guardar la registracion generada
-  const saveData = () => {
+  const saveData = (retry) => {
     setFirstOpen(false);
     setDisable(true);
     setLoading(true);
 
-    BaseService.saveData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
-      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, "", "")
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, retry ? resultRequest : null);
+
+    let transactionalRequest = {}
+    transactionalRequest.commonParams = commonParams;
+
+    BaseService.saveData(transactionalRequest)
       .then(data => {
         let pedido = data.registration.requestNumber;
         let mensaje = data.registration.message;
@@ -76,10 +82,15 @@ export default function DischargeFunc() {
   const printData = () => {
     setLoading(true);
 
-    BaseService.printData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
-      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, "",
-      "", "", "", resultRequest)
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
+
+    let transactionalRequest = {}
+    transactionalRequest.commonParams = commonParams;
+
+    BaseService.printData(transactionalRequest)
       .then(data => {
+        console.log(data);
         setLoading(false);
       });
   };

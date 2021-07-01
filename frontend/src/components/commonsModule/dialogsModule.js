@@ -72,6 +72,10 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
         setSecondOpen(false);
     };
 
+    const retrySaveData = () => {
+        saveData(true);
+    };
+
     // Style variables
     const classes = useStyles();
 
@@ -107,8 +111,8 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
                 <DialogActions>
                     <Button variant="contained" color="secondary" size="large" className={classes.button}
                         startIcon={<PrintIcon />} onClick={printScreen}>Imprimir</Button>
-                    <Button onClick={saveData} variant="outlined" color="secondary" size="large" className={classes.buttonOutlined}
-                        startIcon={<AutorenewIcon />} style={{ display: (origin === 'SUCURSAL' && resultStatus !== 'Resuelto') ? 'inherit' : 'none' }}>Reintentar</Button>
+                    <Button onClick={retrySaveData} variant="outlined" color="secondary" size="large" className={classes.buttonOutlined}
+                        startIcon={<AutorenewIcon />} style={{ display: (origin === 'BANCA' && resultStatus !== 'Resuelto') ? 'inherit' : 'none' }}>Reintentar</Button>
                     <Button onClick={handleCloseSecond} variant="contained" color="secondary" size="large" className={classes.button}
                         startIcon={<CloseIcon />}>Cerrar</Button>
                 </DialogActions>

@@ -1,23 +1,17 @@
-import BaseService from "./baseService";
+import UtilsService from "./utilsService";
 
 const ReprintService = {
 
-    _call_get(url) {
-        return fetch(url)
-            .then(res => res.json())
-            .catch(err => console.log(err))
-    },
-
     getEmbozos(operationId, code) {
-        return this._call_get(BaseService.URL() + '/reimpresion/tarjetas/embozos?operationId=' + operationId + '&codigo=' + code);
+        return UtilsService._call_get(UtilsService.URL() + '/reimpresion/tarjetas/embozos?operationId=' + operationId + '&codigo=' + code);
     },
 
     getCardDetails(operationId, cardNumber) {
-        return this._call_get(BaseService.URL() + '/reimpresion/tarjetas/detalle?operationId=' + operationId + '&numero=' + cardNumber);
+        return UtilsService._call_get(UtilsService.URL() + '/reimpresion/tarjetas/detalle?operationId=' + operationId + '&numero=' + cardNumber);
     },
 
     getBranchDetails(operationId) {
-        return this._call_get(BaseService.URL() + '/transaccional/sucursales?operationId=' + operationId);
+        return UtilsService._call_get(UtilsService.URL() + '/transaccional/sucursales?operationId=' + operationId);
     }
 
 }

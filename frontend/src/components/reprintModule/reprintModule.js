@@ -29,6 +29,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 // services
 import BaseService from '../services/baseService';
+import UtilsService from "../services/utilsService";
 import ReprintService from '../services/reprintService';
 
 // start css
@@ -136,7 +137,7 @@ export default function ReprintFunc() {
   };
 
   // Funcion para guardar la registracion generada
-  const saveData = () => {
+  const saveData = (retry) => {
     setFirstOpen(false);
 
     let embozo = selectedDestino === 'DOMICILIO' ? domicilioEmbozo.current.outerText : sucursalEmbozo.current.outerText;
@@ -159,11 +160,17 @@ export default function ReprintFunc() {
     setDisable(true);
     setLoading(true);
 
-    BaseService.saveData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
-      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, embozo,
-      category, "-", selectedSucursal)
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, retry ? resultRequest : null);
+
+    let reprintTdParams = _getReprintTdParams(embozo, category, "-", selectedSucursal);
+
+    let transactionalRequest = {}
+    transactionalRequest.commonParams = commonParams;
+    transactionalRequest.reprintTdParams = reprintTdParams;
+
+    BaseService.saveData(transactionalRequest)
       .then(data => {
-        // TODO: Abrir un dialogo de informacion al usuario con el resultado
         let pedido = data.registration.requestNumber;
         let mensaje = data.registration.message;
         let estado = data.registration.status;
@@ -211,12 +218,30 @@ export default function ReprintFunc() {
 
     setLoading(true);
 
-    BaseService.printData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
-      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, embozo,
-      category, "-", selectedSucursal, resultRequest)
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
+
+    let reprintTdParams = _getReprintTdParams(embozo, category, "-", selectedSucursal);
+
+    let transactionalRequest = {}
+    transactionalRequest.commonParams = commonParams;
+    transactionalRequest.reprintTdParams = reprintTdParams;
+
+    BaseService.printData(transactionalRequest)
       .then(data => {
         setLoading(false);
       });
+  };
+
+  const _getReprintTdParams = (embozo, category, domicilio, sucursal) => {
+
+    let reprintTdParams = {};
+    reprintTdParams.embozo = embozo;
+    reprintTdParams.category = category;
+    reprintTdParams.domicilio = domicilio;
+    reprintTdParams.sucursal = sucursal;
+    return reprintTdParams;
+
   };
 
   return (
@@ -307,7 +332,7 @@ export default function ReprintFunc() {
                           {
                             embozos.filter(embozo => embozo.destino === 'Domicilio').map(fEmbozo => (
                               <Typography key="domicilioEmbozo" ref={domicilioEmbozo} className={classes.pos} color="textSecondary">
-                                  {fEmbozo.embozo}
+                                {fEmbozo.embozo}
                               </Typography>))
                           }
                         </Grid>

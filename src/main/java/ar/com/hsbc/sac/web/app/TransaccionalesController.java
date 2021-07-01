@@ -2,7 +2,6 @@ package ar.com.hsbc.sac.web.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +26,6 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.codec.Base64.OutputStream;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -116,7 +114,7 @@ public class TransaccionalesController {
         @PostMapping("/grabar")
         public ResponseEntity<Transaccional> grabarTransaccional(
                         @RequestBody TransactionalRequest transactionalRequest) {
-                System.out.println("Grabar Transaccional " + transactionalRequest.getOption() + ": "
+                System.out.println("Grabar Transaccional " + transactionalRequest.getCommonParams().getOption() + ": "
                                 + transactionalRequest);
                 dormir(500);
                 return new ResponseEntity<>(Transaccional.builder().registration(getRegistration())
@@ -179,10 +177,10 @@ public class TransaccionalesController {
         @PostMapping("/imprimir")
         public ResponseEntity<Resource> imprimirTransaccional(@RequestBody TransactionalRequest transactionalRequest) {
 
-                var fullFilename = transactionalRequest.getOption() + "_" + transactionalRequest.getRequestNumber()
-                                + ".pdf";
+                var fullFilename = transactionalRequest.getCommonParams().getOption() + "_"
+                                + transactionalRequest.getCommonParams().getRequestNumber() + ".pdf";
                 Resource resource = null;
-                var titulo = obtenerTitulo(transactionalRequest.getOption());
+                var titulo = obtenerTitulo(transactionalRequest.getCommonParams().getOption());
                 try {
                         System.out.println("######################################################");
                         Document document = new Document();
@@ -208,8 +206,9 @@ public class TransaccionalesController {
                         document.add(new Paragraph(" "));
                         document.add(new Paragraph(" "));
 
-                        ClienteExtendidoDTO cliente = clientes.get(transactionalRequest.getDocumentType()
-                                        + transactionalRequest.getDocumentNumber());
+                        ClienteExtendidoDTO cliente = clientes
+                                        .get(transactionalRequest.getCommonParams().getDocumentType()
+                                                        + transactionalRequest.getCommonParams().getDocumentNumber());
 
                         System.out.println("AGREGAR DATOS TRANSACCIONAL");
                         Map<String, String> datosTransaccional = new HashMap<>();
@@ -278,16 +277,19 @@ public class TransaccionalesController {
 
         private Map<String, String> obtenerDatosSolicitud(TransactionalRequest transactionalRequest) {
                 Map<String, String> obtenerDatosSolicitud = new HashMap<>();
-                obtenerDatosSolicitud.put("Número de Pedido", transactionalRequest.getRequestNumber());
-                switch (transactionalRequest.getOption()) {
+                obtenerDatosSolicitud.put("Número de Pedido",
+                                transactionalRequest.getCommonParams().getRequestNumber());
+                switch (transactionalRequest.getCommonParams().getOption()) {
                         case "ReimprimirTarjeta":
                         case "ReimprimirDiferida":
-                                String destino = transactionalRequest.getSucursal().equals("-") ? "Domicilio"
-                                                : transactionalRequest.getSucursal();
+                                String destino = transactionalRequest.getReprintTdParams().getSucursal().equals("-")
+                                                ? "Domicilio"
+                                                : transactionalRequest.getReprintTdParams().getSucursal();
                                 obtenerDatosSolicitud.put("Destino de reimpresión", destino);
                                 break;
                         case "BajaDeTarjeta":
-                                obtenerDatosSolicitud.put("Número de Tarjeta", transactionalRequest.getProductNumber());
+                                obtenerDatosSolicitud.put("Número de Tarjeta",
+                                                transactionalRequest.getCommonParams().getProductNumber());
                                 break;
                         default:
                                 break;
