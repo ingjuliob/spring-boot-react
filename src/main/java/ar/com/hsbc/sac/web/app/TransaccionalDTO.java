@@ -21,7 +21,7 @@ public class TransaccionalDTO {
     private String contactMode;
     private String productCode;
     private String causeCode;
-    private String reasonCode;
+    private String reasoncode;
     private String companyCode;
     private String responsibleSector;
     private String requestNumber;
