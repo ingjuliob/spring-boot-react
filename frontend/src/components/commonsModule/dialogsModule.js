@@ -61,6 +61,14 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
             return <Typography gutterBottom>
                 ¿Está seguro que desea <strong variant="h5" component="h2">DAR DE BAJA</strong> la tarjeta de débito?
             </Typography>;
+        } else if (option === 'BlanqueoPin') {
+            return <Typography gutterBottom>
+                ¿Está seguro que desea <strong variant="h5" component="h2">BLANQUEAR EL PIN</strong> de la tarjeta de débito?
+            </Typography>;
+        } else if (option === 'CambioCierre' || option === 'CambioCierreTC' || option === 'CbioCierreCartera') {
+            return <Typography gutterBottom>
+                ¿Está seguro que desea <strong variant="h5" component="h2">CAMBIAR EL CIERRE DE CARTERA</strong> de la tarjeta de crédito?
+            </Typography>;
         }
     }
 

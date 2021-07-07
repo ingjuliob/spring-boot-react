@@ -82,15 +82,10 @@ export default function DischargeFunc() {
   const printData = () => {
     setLoading(true);
 
-    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
-      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
-
-    let transactionalRequest = {}
-    transactionalRequest.commonParams = commonParams;
-
-    BaseService.printData(transactionalRequest)
+    BaseService.printData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, "",
+      "", "", "", resultRequest)
       .then(data => {
-        console.log(data);
         setLoading(false);
       });
   };
@@ -166,7 +161,7 @@ export default function DischargeFunc() {
         {/* End Dialog */}
 
         {/* Start Buttons Module */}
-        <ButtonsModule disable={disable} getConfirmation={getConfirmation} valueButton={"Guardar"}></ButtonsModule>
+        <ButtonsModule disable={disable} getConfirmation={getConfirmation} valueButton={"Blanquear PIN"}></ButtonsModule>
         {/* End Buttons Module */}
       </Container>
     </div>

@@ -41,6 +41,10 @@ export default function CenteredGrid() {
       setTipo("Reimpresión Común de Tarjeta Banelco");
     } else if (option === 'BajaBanelco') {
       setTipo("Baja de Tarjeta Banelco");
+    } else if (option === 'BlanqueoPin') {
+      setTipo("Blanqueo de PIN");
+    } else if (option === 'CambioCierre' || option === 'CambioCierreTC' || option === 'CbioCierreCartera') {
+      setTipo("Cambio de Cierre TC");
     }
   }, [option]);
 

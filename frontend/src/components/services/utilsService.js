@@ -65,7 +65,7 @@ const UtilsService = {
     },
 
     getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
-        user, option, contactMode, reasoncode, responsibleSector, registerSector, initContact, closeContact, requestNumber) {
+        user, option, contactMode, reasonCode, responsibleSector, registerSector, initContact, closeContact, requestNumber) {
 
         let commonParams = {};
         commonParams.operationId = operationId;
@@ -78,7 +78,7 @@ const UtilsService = {
         commonParams.contactMode = contactMode;
         commonParams.productCode = productCode;
         commonParams.causeCode = causeCode;
-        commonParams.reasoncode = reasoncode;
+        commonParams.reasoncode = reasonCode;
         commonParams.companyCode = companyCode;
         commonParams.responsibleSector = responsibleSector;
         commonParams.registerSector = registerSector;

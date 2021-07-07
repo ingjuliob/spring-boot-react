@@ -15,23 +15,42 @@ import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 
 // services
 import BaseService from '../services/baseService';
+import CloseChangeService from "../services/closeChangeService";
 import UtilsService from "../services/utilsService";
 
 // start css
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
 
   root: { flexGrow: 1, borderRadius: 0 },
   pos: { marginBottom: 12, },
   divider: { marginTop: 25, marginBottom: 25 },
   formControl: { width: '95%' },
+  formControl2: { margin: theme.spacing(1), minWidth: 120 },
+  selectEmpty: { marginTop: theme.spacing(2) },
 
+}));
+const tabla = makeStyles(() => ({
+  table: {
+    minWidth: 650,
+  },
 }));
 // end css
 
-export default function DischargeFunc() {
+export default function CloseChangeFunc() {
 
   // Entry params
   let { operationId, option, documentType, documentNumber, businessName, contactModeCode, productCode, causeCode,
@@ -39,16 +58,19 @@ export default function DischargeFunc() {
     initContact, closeContact, productNumber } = useParams();
 
   // State variables
-  const [disable, setDisable] = React.useState(false);
+  const [disable, setDisable] = React.useState(true);
   const [firstOpen, setFirstOpen] = React.useState(false);
   const [secondOpen, setSecondOpen] = React.useState(false);
   const [resultRequest, setResultRequest] = React.useState("");
   const [resultStatus, setResultStatus] = React.useState("");
   const [resultMsg, setResultMsg] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [cartera, setCartera] = React.useState("");
+  const [rows, setRows] = React.useState([]);
 
   // Style variables
   const classes = useStyles();
+  const classTable = tabla();
 
   // Funcion para guardar la registracion generada
   const saveData = (retry) => {
@@ -56,11 +78,14 @@ export default function DischargeFunc() {
     setDisable(true);
     setLoading(true);
 
-    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonsParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, retry ? resultRequest : null);
 
+    let closeChangeParams = _getCloseChangeParams(rows[0]);
+
     let transactionalRequest = {}
-    transactionalRequest.commonParams = commonParams;
+    transactionalRequest.commonParams = commonsParams;
+    transactionalRequest.closeChangeParams = closeChangeParams;
 
     BaseService.saveData(transactionalRequest)
       .then(data => {
@@ -79,20 +104,47 @@ export default function DischargeFunc() {
     setFirstOpen(true);
   }
 
+  React.useEffect(() => {
+    async function callAPI() {
+      CloseChangeService.getTarjetas(operationId, documentType, documentNumber)
+        .then(data => {
+          setRows(data.cardAccArr);
+          setLoading(false);
+        })
+    }
+    callAPI();
+  }, [operationId, documentType, documentNumber]);
+
   const printData = () => {
     setLoading(true);
 
-    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonsParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
 
+    let closeChangeParams = _getCloseChangeParams(rows[0]);
+
     let transactionalRequest = {}
-    transactionalRequest.commonParams = commonParams;
+    transactionalRequest.commonParams = commonsParams;
+    transactionalRequest.closeChangeParams = closeChangeParams;
 
     BaseService.printData(transactionalRequest)
       .then(data => {
-        console.log(data);
         setLoading(false);
       });
+  };
+
+  const _getCloseChangeParams = (row) => {
+    let closeChangeParams = {};
+    closeChangeParams.tipoCliente = "Titular";
+    closeChangeParams.apellidoNombre = row.cardhName;
+    closeChangeParams.nroTarjeta = row.cardNum;
+    closeChangeParams.estado = row.primAcctInfo.statDesc;
+    closeChangeParams.cartera = cartera;
+    return closeChangeParams;
+  }
+
+  const handleChange = (event, data) => {
+    setCartera(data.props.value);
   };
 
   return (
@@ -133,22 +185,51 @@ export default function DischargeFunc() {
                 <Divider variant="middle" className={classes.divider} />
 
                 <Grid container spacing={6}>
-                  <Grid item lg={4}>
+                  <TableContainer component={Paper}>
+                    <Table className={classTable.table} size="small" aria-label="a dense table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="left">Tipo</TableCell>
+                          <TableCell align="left">Tipo Doc.</TableCell>
+                          <TableCell align="left">Numero Doc.</TableCell>
+                          <TableCell align="left">Apellido y Nombre</TableCell>
+                          <TableCell align="left">Numero</TableCell>
+                          <TableCell align="left">Estado</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rows.map((row) =>
+                          <TableRow key={row.cardNum}>
+                            <TableCell component="th" scope="row">{'Titular'}</TableCell>
+                            <TableCell align="left">{row.typeIdfcCde}</TableCell>
+                            <TableCell align="left">{row.idfcNum}</TableCell>
+                            <TableCell align="left">{row.cardhName}</TableCell>
+                            <TableCell align="left">{row.cardNum}</TableCell>
+                            <TableCell align="left">{row.primAcctInfo.statDesc}</TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+
+                <Divider variant="middle" className={classes.divider} />
+
+                <Grid container spacing={6}>
+                  <Grid item lg={2} xs={6}>
                     <Typography variant="caption" display="block" gutterBottom>
-                      Nº Banelco
+                      Cartera
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
-                      {productNumber}
-                    </Typography>
+                    <FormControl className={classes.formControl}>
+                      <Select onChange={handleChange} value={cartera}>
+                        <MenuItem value={"01"} onClick={() => setDisable(false)}>Cartera 1</MenuItem>
+                        <MenuItem value={"02"} onClick={() => setDisable(false)}>Cartera 2</MenuItem>
+                        <MenuItem value={"03"} onClick={() => setDisable(false)}>Cartera 3</MenuItem>
+                        <MenuItem value={"04"} onClick={() => setDisable(false)}>Cartera 4</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
-                  <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      Tipo Tarjeta
-                    </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
-                      P.TIT.ELECTRON
-                    </Typography>
-                  </Grid>
+
                 </Grid>
               </CardContent>
             </Card>
@@ -170,5 +251,7 @@ export default function DischargeFunc() {
         {/* End Buttons Module */}
       </Container>
     </div>
+
   );
+
 }

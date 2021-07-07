@@ -7,7 +7,6 @@ const BaseService = {
     },
 
     saveData(transactionalRequest) {
-        console.log(transactionalRequest);
         return UtilsService._call_post(UtilsService.URL() + '/transaccional/grabar', transactionalRequest);
     },
 

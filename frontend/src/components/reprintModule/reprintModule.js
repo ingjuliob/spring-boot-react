@@ -448,8 +448,8 @@ export default function ReprintFunc() {
           secondOpen={secondOpen} setSecondOpen={setSecondOpen}></DialogsModule>
         {/* End Dialog */}
 
-        {/* Start Buttons Module */}
-        <ButtonsModule disable={disable} getConfirmation={getConfirmation}></ButtonsModule>
+       {/* Start Buttons Module */}
+        <ButtonsModule disable={disable} getConfirmation={getConfirmation} valueButton={"Guardar"}></ButtonsModule>
         {/* End Buttons Module */}
 
       </Container>
