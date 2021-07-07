@@ -27,10 +27,14 @@ const useStyles = makeStyles(() => ({
 }));
 // end css
 
-export default function CenteredGrid({ getConfirmation, disable,valueButton }) {
+export default function CenteredGrid({ getConfirmation, disable, valueButton }) {
 
   // Style variables
   const classes = useStyles();
+
+  const closeWindow = () => {
+    window.close();
+  }
 
   return (
     <div className={classes.root}><div className={classes.alignItems}>
@@ -38,7 +42,7 @@ export default function CenteredGrid({ getConfirmation, disable,valueButton }) {
         startIcon={<SaveIcon />} onClick={getConfirmation}>{valueButton}</Button>
 
       <Button variant="contained" color="secondary" size="large" className={classes.button}
-        startIcon={<CloseIcon />}>Salir</Button>
+        onClick={closeWindow} startIcon={<CloseIcon />}>Salir</Button>
     </div>
     </div>
   );

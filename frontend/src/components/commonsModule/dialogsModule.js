@@ -78,6 +78,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
 
     const handleCloseSecond = () => {
         setSecondOpen(false);
+        window.close();
     };
 
     const retrySaveData = () => {
