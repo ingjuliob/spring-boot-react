@@ -37,13 +37,14 @@ export default function CenteredGrid({ getConfirmation, disable, valueButton }) 
   }
 
   return (
-    <div className={classes.root}><div className={classes.alignItems}>
-      <Button variant="contained" color="secondary" size="large" className={classes.button} disabled={disable}
-        startIcon={<SaveIcon />} onClick={getConfirmation}>{valueButton}</Button>
+    <div className={classes.root}>
+      <div className={classes.alignItems}>
+        <Button variant="contained" color="secondary" size="large" className={classes.button} disabled={disable}
+          startIcon={<SaveIcon />} onClick={getConfirmation}>{valueButton}</Button>
 
-      <Button variant="contained" color="secondary" size="large" className={classes.button}
-        onClick={closeWindow} startIcon={<CloseIcon />}>Salir</Button>
-    </div>
+        <Button variant="contained" color="secondary" size="large" className={classes.button}
+          onClick={closeWindow} startIcon={<CloseIcon />}>Salir</Button>
+      </div>
     </div>
   );
 }

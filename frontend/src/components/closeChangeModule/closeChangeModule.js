@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import NavbarModule from '../commonsModule/navbarModule';
+import HelpModule from '../commonsModule/helpModule';
 import DialogsModule from '../commonsModule/dialogsModule';
 import ButtonsModule from '../commonsModule/buttonsModule';
 import LoadingModule from '../commonsModule/loadingModule';
@@ -21,7 +22,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -140,10 +140,15 @@ export default function CloseChangeFunc() {
     closeChangeParams.nroTarjeta = row.cardNum;
     closeChangeParams.estado = row.primAcctInfo.statDesc;
     closeChangeParams.cartera = cartera;
+    closeChangeParams.entityAdm = row.acctIdNum;
+    closeChangeParams.codeAdm = row.restrCde;
     return closeChangeParams;
   }
 
   const handleChange = (event, data) => {
+    if (rows.length > 0) {
+      setDisable(false);
+    }
     setCartera(data.props.value);
   };
 
@@ -184,25 +189,23 @@ export default function CloseChangeFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                <Grid container spacing={6}>
-                  <TableContainer component={Paper}>
-                    <Table className={classTable.table} size="small" aria-label="a dense table">
+                <Grid container spacing={5}>
+                  <TableContainer>
+                    <Table className={classTable.table} size="small" aria-label="customized tablee">
                       <TableHead>
                         <TableRow>
-                          <TableCell align="left">Tipo</TableCell>
-                          <TableCell align="left">Tipo Doc.</TableCell>
-                          <TableCell align="left">Numero Doc.</TableCell>
-                          <TableCell align="left">Apellido y Nombre</TableCell>
-                          <TableCell align="left">Numero</TableCell>
-                          <TableCell align="left">Estado</TableCell>
+                          <TableCell align="left"><strong>Tipo</strong></TableCell>
+                          <TableCell align="left"><strong>Documento</strong></TableCell>
+                          <TableCell align="left"><strong>Apellido y Nombre</strong></TableCell>
+                          <TableCell align="left"><strong>Número de Tarjeta</strong></TableCell>
+                          <TableCell align="left"><strong>Estado</strong></TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {rows.map((row) =>
                           <TableRow key={row.cardNum}>
                             <TableCell component="th" scope="row">{'Titular'}</TableCell>
-                            <TableCell align="left">{row.typeIdfcCde}</TableCell>
-                            <TableCell align="left">{row.idfcNum}</TableCell>
+                            <TableCell align="left">{row.typeIdfcCde} {row.idfcNum}</TableCell>
                             <TableCell align="left">{row.cardhName}</TableCell>
                             <TableCell align="left">{row.cardNum}</TableCell>
                             <TableCell align="left">{row.primAcctInfo.statDesc}</TableCell>
@@ -218,19 +221,21 @@ export default function CloseChangeFunc() {
                 <Grid container spacing={6}>
                   <Grid item lg={2} xs={6}>
                     <Typography variant="caption" display="block" gutterBottom>
-                      Cartera
+                      <strong>Seleccione Cartera</strong>
                     </Typography>
                     <FormControl className={classes.formControl}>
                       <Select onChange={handleChange} value={cartera}>
-                        <MenuItem value={"01"} onClick={() => setDisable(false)}>Cartera 1</MenuItem>
-                        <MenuItem value={"02"} onClick={() => setDisable(false)}>Cartera 2</MenuItem>
-                        <MenuItem value={"03"} onClick={() => setDisable(false)}>Cartera 3</MenuItem>
-                        <MenuItem value={"04"} onClick={() => setDisable(false)}>Cartera 4</MenuItem>
+                        <MenuItem value={"01"}>Cartera 1</MenuItem>
+                        <MenuItem value={"02"}>Cartera 2</MenuItem>
+                        <MenuItem value={"03"}>Cartera 3</MenuItem>
+                        <MenuItem value={"04"}>Cartera 4</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
-
                 </Grid>
+                <br></br>
+                <br></br>
+                <HelpModule />
               </CardContent>
             </Card>
           </Grid>

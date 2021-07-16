@@ -64,13 +64,27 @@ const UtilsService = {
             .catch(err => console.log(err))
     },
 
-    getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    async _call_post_file(url, data) {
+        return fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: data
+        })
+            .catch(err => console.log(err))
+    },
+
+    getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
         user, option, contactMode, reasonCode, responsibleSector, registerSector, initContact, closeContact, requestNumber) {
 
         let commonParams = {};
         commonParams.operationId = operationId;
         commonParams.documentType = documentType;
         commonParams.documentNumber = documentNumber;
+        commonParams.businessName = businessName;
         commonParams.productNumber = productNumber;
         commonParams.user = user;
         commonParams.origin = origin;
@@ -86,6 +100,7 @@ const UtilsService = {
         commonParams.closeContact = closeContact;
         commonParams.requestNumber = requestNumber;
         commonParams.retry = requestNumber ? true : false;
+        commonParams.observation = "";
         return commonParams;
 
     }

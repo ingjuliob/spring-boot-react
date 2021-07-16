@@ -25,21 +25,20 @@ const useStyles = makeStyles((theme) => ({
 
     root: { flexGrow: 1, borderRadius: 0 },
     button: {
-        margin: 10, marginTop: 25, marginBottom: 30, textTransform: 'capitalize', backgroundColor: '#DB0011',
+        margin: 10, marginTop: 25, marginBottom: 25, textTransform: 'capitalize', backgroundColor: '#DB0011',
         borderRadius: '0'
     },
     buttonOutlined: {
         margin: 10, marginTop: 25, marginBottom: 30, textTransform: 'capitalize', color: '#DB0011',
         borderRadius: '0'
     },
-    alignItems: { textAlign: 'right' }
 
 }));
 // end css
 
 export default function CenteredGrid({ saveData, resultRequest, resultStatus, resultMsg, firstOpen, setFirstOpen, secondOpen, setSecondOpen, printScreen }) {
 
-    // Entry params
+  // Entry params
     let { option, origin } = useParams();
 
     // State variables
@@ -90,6 +89,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
 
     return (
         <div className={classes.root}>
+            {/* start dialog confirmation */}
             <Dialog fullScreen={fullScreen} open={firstOpen} onClose={handleCloseFirst} aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{"Confirmación"}</DialogTitle>
                 <DialogContent>
@@ -105,6 +105,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
                 </DialogActions>
             </Dialog>
 
+            {/* start dialog result */}
             <Dialog fullScreen={fullScreen} open={secondOpen} onClose={handleCloseSecond} aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{"Registración"}</DialogTitle>
                 <DialogContent>
@@ -123,7 +124,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
                     <Button onClick={retrySaveData} variant="outlined" color="secondary" size="large" className={classes.buttonOutlined}
                         startIcon={<AutorenewIcon />} style={{ display: (origin === 'BANCA' && resultStatus !== 'Resuelto') ? 'inherit' : 'none' }}>Reintentar</Button>
                     <Button onClick={handleCloseSecond} variant="contained" color="secondary" size="large" className={classes.button}
-                        startIcon={<CloseIcon />}>Cerrar</Button>
+                        startIcon={<CloseIcon />}>Salir</Button>
                 </DialogActions>
             </Dialog>
         </div>

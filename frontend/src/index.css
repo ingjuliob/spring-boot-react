@@ -10,3 +10,19 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.MuiPaper-rounded {
+  border-radius: 0px !important;
+}
+
+.MuiFormControl-root {
+  width: 100%;
+}
+
+.MuiCheckbox-colorPrimary.Mui-checked {
+  color: #DB0011 !important;
+}
+
+textarea {
+  resize: none;
+}

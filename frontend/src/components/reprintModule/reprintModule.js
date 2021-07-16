@@ -6,6 +6,9 @@ import ButtonsModule from '../commonsModule/buttonsModule';
 import LoadingModule from '../commonsModule/loadingModule';
 import SnackbarModule from '../commonsModule/snackbarModule';
 import DialogsModule from '../commonsModule/dialogsModule';
+import UploadFile from '../commonsModule/uploadFile';
+import line from '../../img/vertical-line.svg';
+import Tabs from './tabs';
 
 // import css
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -27,18 +30,27 @@ import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
+// icons
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
+
 // services
 import BaseService from '../services/baseService';
 import UtilsService from "../services/utilsService";
 import ReprintService from '../services/reprintService';
 
 // start css
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
 
   root: { flexGrow: 1, borderRadius: 0 },
   pos: { marginBottom: 12, },
+  line: { width: 6, paddingRight: 15, height: 16 },
   divider: { marginTop: 25, marginBottom: 25 },
   formControl: { width: '95%' },
+  heading: { flexBasis: '33.33%', flexShrink: 0 },
+  paddingLine: { padding: '0 16px' },
+  attach: { paddingRight: 15, verticalAlign: 'middle' },
+  secondaryHeading: { fontSize: theme.typography.pxToRem(15), color: theme.palette.text.secondary, alignSelf: 'center' },
 
 }));
 
@@ -85,6 +97,7 @@ export default function ReprintFunc() {
   const [selectedSucursal, setSelectedSucursal] = React.useState('');
   const [firstOpen, setFirstOpen] = React.useState(false);
   const [secondOpen, setSecondOpen] = React.useState(false);
+  const [openUploadFiles, setOpenUploadFiles] = React.useState(false);
   const [resultRequest, setResultRequest] = React.useState("");
   const [resultStatus, setResultStatus] = React.useState("");
   const [resultMsg, setResultMsg] = React.useState("");
@@ -95,6 +108,10 @@ export default function ReprintFunc() {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [severity, setSeverity] = React.useState('');
   const [message, setMessage] = React.useState('');
+  // Add Files
+  const [isAddFiles, setIsAddFiles] = React.useState(false);
+  const [clientRelations, setClientRelations] = React.useState([]);
+  const [productRelations, setProductRelations] = React.useState([]);
 
   // Ref variables
   let domicilioEmbozo = React.useRef(null);
@@ -137,7 +154,8 @@ export default function ReprintFunc() {
   };
 
   // Funcion para guardar la registracion generada
-  const saveData = (retry) => {
+  const saveData = async (retry) => {
+
     setFirstOpen(false);
 
     let embozo = selectedDestino === 'DOMICILIO' ? domicilioEmbozo.current.outerText : sucursalEmbozo.current.outerText;
@@ -160,8 +178,16 @@ export default function ReprintFunc() {
     setDisable(true);
     setLoading(true);
 
-    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, retry ? resultRequest : null);
+
+    // ADD Files
+    if (isAddFiles) {
+      commonParams.relTipoDocumentalCliente = clientRelations;
+      commonParams.relTipoDocumentalProducto = productRelations;
+      let productFiles = productRelations.filter(relation => relation.esAddFiles === true);
+      commonParams.adjuntarArchivos = productFiles.length > 0;
+    }
 
     let reprintTdParams = _getReprintTdParams(embozo, category, "-", selectedSucursal);
 
@@ -169,17 +195,31 @@ export default function ReprintFunc() {
     transactionalRequest.commonParams = commonParams;
     transactionalRequest.reprintTdParams = reprintTdParams;
 
-    BaseService.saveData(transactionalRequest)
-      .then(data => {
-        let pedido = data.registration.requestNumber;
-        let mensaje = data.registration.message;
-        let estado = data.registration.status;
-        setSecondOpen(true);
-        setResultRequest(pedido);
-        setResultStatus(estado);
-        setResultMsg(mensaje);
-        setLoading(false);
-      });
+    // ADD Files
+    if (isAddFiles) {
+      let data = await BaseService.saveDataWithFiles(transactionalRequest);
+      let pedido = data.registration.requestNumber;
+      let mensaje = data.registration.message;
+      let estado = data.registration.status;
+      setSecondOpen(true);
+      setResultRequest(pedido);
+      setResultStatus(estado);
+      setResultMsg(mensaje);
+      setLoading(false);
+    } else {
+      BaseService.saveData(transactionalRequest)
+        .then(data => {
+          let pedido = data.registration.requestNumber;
+          let mensaje = data.registration.message;
+          let estado = data.registration.status;
+          setSecondOpen(true);
+          setResultRequest(pedido);
+          setResultStatus(estado);
+          setResultMsg(mensaje);
+          setLoading(false);
+        });
+    }
+
   }
 
   const getConfirmation = () => {
@@ -211,6 +251,22 @@ export default function ReprintFunc() {
     }
     callAPI();
   }, [operationId, productNumber, setShowDomicilio, setShowSucursal, setShowExterior]);
+
+  // Funcion hook para consultar las relaciones de tipo documental
+  // Add Files
+  React.useEffect(() => {
+    async function callAPI() {
+      BaseService.getDocumentalRelations(operationId, causeCode, reasonCode, documentType, documentNumber)
+        .then(data => {
+          setIsAddFiles(data.adjuntarArchivos);
+          if (isAddFiles) {
+            setClientRelations(data.relTipoDocumentalCliente);
+            setProductRelations(data.relTipoDocumentalProducto);
+          }
+        })
+    }
+    callAPI();
+  }, [operationId, causeCode, reasonCode, documentType, isAddFiles, documentNumber]);
 
   const printScreen = () => {
     let embozo = selectedDestino === 'DOMICILIO' ? domicilioEmbozo.current.outerText : sucursalEmbozo.current.outerText;
@@ -259,7 +315,8 @@ export default function ReprintFunc() {
           <Grid item lg={12}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h5" component="h2" className={classes.paddingLine}>
+                  <img src={line} className={classes.line} alt="logo" />
                   Cliente
                 </Typography>
                 <br></br>
@@ -301,10 +358,17 @@ export default function ReprintFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                <Typography variant="h5" component="h2">
+                <Typography variant="h5" component="h2" className={classes.paddingLine}>
+                  <img src={line} className={classes.line} alt="logo" />
                   Destino
                 </Typography>
                 <br></br>
+
+                {/* start tabs */}
+                {/* <Tabs embozos={embozos} domicilioEmbozo={domicilioEmbozo} domicilioCategoria={domicilioCategoria}
+                      exteriorCategoria={exteriorCategoria} exteriorEmbozo={exteriorEmbozo}></Tabs> */}
+                {/* end tabs */}
+
                 <div>
                   <Accordion square expanded={expanded === "panelDomicilio"} key='acc-domicilio' style={{ display: showDomicilio ? 'inherit' : 'none' }}>
                     <AccordionSummary aria-controls="panelDomiciliod-content" id="panelDomiciliod-header">
@@ -358,7 +422,7 @@ export default function ReprintFunc() {
                     </AccordionSummary>
                     <AccordionDetails>
                       <Grid container spacing={3}>
-                        <Grid item lg={2} xs={6}>
+                        <Grid item lg={3}>
                           <Typography variant="caption" display="block" gutterBottom>
                             Sucursal
                           </Typography>
@@ -433,6 +497,25 @@ export default function ReprintFunc() {
                 </div>
                 <br></br>
                 <HelpModule />
+                <br></br>
+
+                {/* start ADD Files */}
+                {isAddFiles ?
+                  <Accordion style={{ backgroundColor: '#f5f5f5' }}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+                      <Typography className={classes.heading} variant="h5" component="h2">
+                        <AttachFileIcon size="large" color="secondary" className={classes.attach} />
+                        Adjuntar Archivos
+                      </Typography>
+                      <Typography className={classes.secondaryHeading}>Expanda acá para gestionar adjuntos</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <UploadFile clientRelations={clientRelations} productRelations={productRelations}></UploadFile>
+                    </AccordionDetails>
+                  </Accordion>
+                  : <div></div>}
+                {/* end ADD Files */}
+
               </CardContent>
             </Card>
           </Grid>
@@ -445,10 +528,11 @@ export default function ReprintFunc() {
         {/* Start Dialog */}
         <DialogsModule saveData={saveData} resultRequest={resultRequest} resultStatus={resultStatus}
           resultMsg={resultMsg} firstOpen={firstOpen} setFirstOpen={setFirstOpen} printScreen={printScreen}
-          secondOpen={secondOpen} setSecondOpen={setSecondOpen}></DialogsModule>
+          secondOpen={secondOpen} setSecondOpen={setSecondOpen} openUploadFiles={openUploadFiles}
+          setOpenUploadFiles={setOpenUploadFiles}></DialogsModule>
         {/* End Dialog */}
 
-       {/* Start Buttons Module */}
+        {/* Start Buttons Module */}
         <ButtonsModule disable={disable} getConfirmation={getConfirmation} valueButton={"Guardar"}></ButtonsModule>
         {/* End Buttons Module */}
 

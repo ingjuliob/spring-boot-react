@@ -5,14 +5,19 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
 // material
-import { Alert, AlertTitle } from '@material-ui/lab';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Typography from "@material-ui/core/Typography";
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 // services
 import BaseService from '../services/baseService';
 
 // start css
 const useStyles = makeStyles((theme) => ({
-  root: { flexGrow: 1, borderRadius: 0 }
+  root: { flexGrow: 1, borderRadius: 0 },
+  icon: { color: '#00b7ff' },
+  title: { marginLeft: '1%', verticalAlign: '5px', color: '#24557d', fontSize: 'large' },
+  textarea: { width: '99%', backgroundColor: 'aliceblue', border: 'none', fontFamily: 'inherit', color: '#24557d' }
 }))
 // end css
 
@@ -38,12 +43,27 @@ export default function CenteredGrid() {
     callAPI();
   }, [operationId, productCode, causeCode, reasonCode, companyCode]);
 
+  React.useEffect(() => {
+    window.addEventListener('beforeunload', alertUser)
+    return () => {
+      window.removeEventListener('beforeunload', alertUser)
+    }
+  }, [])
+  const alertUser = e => {
+    e.preventDefault()
+    e.returnValue = ''
+  }
+
   return (
-    <div className={classes.root}>
-      <Alert severity="info">
-        <AlertTitle><strong>Tener en cuenta</strong></AlertTitle>
-        {helpText}
-      </Alert>
+    <div className={classes.root} style={{ backgroundColor: 'aliceblue', padding: '2%' }}>
+
+      <Typography variant="h6" component="h2">
+        <ErrorOutlineIcon className={classes.icon} />
+        <strong className={classes.title}>Tener en cuenta</strong>
+        <br></br>
+      </Typography>
+      <TextareaAutosize aria-label="minimum height" minRows={3} disabled className={classes.textarea} value={helpText}>
+      </TextareaAutosize>
     </div>
   );
 }
