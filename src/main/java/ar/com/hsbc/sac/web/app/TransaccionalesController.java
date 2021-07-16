@@ -1,7 +1,9 @@
 package ar.com.hsbc.sac.web.app;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +19,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -27,6 +31,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +43,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import ar.com.hsbc.sac.web.model.Authority;
 import ar.com.hsbc.sac.web.model.Branch;
@@ -116,9 +124,9 @@ public class TransaccionalesController {
                         @RequestBody TransactionalRequest transactionalRequest) {
                 System.out.println("Grabar Transaccional " + transactionalRequest.getCommonParams().getOption() + ": "
                                 + transactionalRequest);
+                System.out.println("Observaciones: " + transactionalRequest.getCommonParams().getObservation());
                 dormir(500);
                 return new ResponseEntity<>(Transaccional.builder().registration(getRegistration())
-
                                 .header(UtilsController.getSuccessResponse()).build(), HttpStatus.OK);
         }
 
@@ -142,8 +150,8 @@ public class TransaccionalesController {
                         @RequestParam("productCode") String productCode, @RequestParam("causeCode") String causeCode,
                         @RequestParam("reasonCode") String reasonCode,
                         @RequestParam("companyCode") String companyCode) {
-                Transaccional transaccional = Transaccional.builder()
-                                .message("COMPLETAR TODOS LOS DATOS SOLICITADOS EN CADA CASO.")
+                Transaccional transaccional = Transaccional.builder().message(
+                                "COMPLETAR TODOS LOS DATOS SOLICITADOS EN CADA CASO.\nVeriricar:\nQué?: Que la tarjeta esté activa.\nDónde?: En BRAP\nTiempo de Resolución: aproximadamente 10 días hábiles.\nSi la tarjeta está bliqueada entonces no podrá procesarse.")
                                 .header(UtilsController.getSuccessResponse()).build();
                 dormir(500);
                 return new ResponseEntity<>(transaccional, HttpStatus.OK);
@@ -292,6 +300,31 @@ public class TransaccionalesController {
                 }
                 dormir(500);
                 return new ResponseEntity<>(transaccional, HttpStatus.OK);
+        }
+
+        @GetMapping("/generarNumeroPedido")
+        public ResponseEntity<Transaccional> generarNumeroPedido(@RequestParam("operationId") String operationId,
+                        @RequestParam("companyCode") String companyCode, @RequestParam("causeCode") String causeCode) {
+                Transaccional transaccional = Transaccional.builder()
+                                .message(String.valueOf(generateRegistrationNumber()))
+                                .header(UtilsController.getSuccessResponse()).build();
+                return new ResponseEntity<>(transaccional, HttpStatus.OK);
+        }
+
+        @PostMapping(value = "/uploadFile", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<Transaccional> uploadFile(@RequestPart(required = false) MultipartFile file,
+                        @RequestPart String operationId, @RequestPart AttachFileDTO attached,
+                        HttpServletRequest request) {
+                var serverFile = new File("C:\\log\\" + file.getOriginalFilename());
+                try (var stream = new BufferedOutputStream(new FileOutputStream(serverFile))) {
+                        byte[] bytes = file.getBytes();
+                        stream.write(bytes);
+                } catch (Exception e) {
+                        System.out.println("Error");
+                }
+                dormir(100);
+                return new ResponseEntity<>(Transaccional.builder().attached(attached)
+                                .header(UtilsController.getSuccessResponse()).build(), HttpStatus.OK);
         }
 
         private List<RelacionTipoDocumental> getRelTipoDocumentalCliente() {
@@ -467,9 +500,9 @@ public class TransaccionalesController {
 
         private static Registration getRegistration() {
                 Registration registration = null;
-                Random random = new Random();
-                int codigo = random.ints(250005000, 250009999).findFirst().getAsInt();
-                int codigo2 = random.ints(1, 20).findFirst().getAsInt();
+                var random = new Random();
+                int codigo = generateRegistrationNumber();
+                var codigo2 = random.ints(1, 20).findFirst().getAsInt();
                 if (codigo2 > 10) {
                         registration = Registration.builder().requestNumber(String.valueOf(codigo)).status("Derivado")
                                         .message("Registración derivada para ser autorizada por un operador.").build();
@@ -479,6 +512,11 @@ public class TransaccionalesController {
                 }
 
                 return registration;
+        }
+
+        private static int generateRegistrationNumber() {
+                var random = new Random();
+                return random.ints(250005000, 250009999).findFirst().getAsInt();
         }
 
         private void dormir(int tiempo) {

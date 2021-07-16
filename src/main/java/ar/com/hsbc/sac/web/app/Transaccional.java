@@ -32,5 +32,6 @@ class Transaccional {
     private boolean adjuntarArchivos;
     private List<RelacionTipoDocumental> relTipoDocumentalCliente;
     private List<RelacionTipoDocumental> relTipoDocumentalProducto;
+    private AttachFileDTO attached;
 
 }

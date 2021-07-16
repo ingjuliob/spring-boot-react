@@ -1,5 +1,7 @@
 package ar.com.hsbc.sac.web.app;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,5 +25,6 @@ public class RelacionTipoDocumental {
     private String codClasificacion;
     private String codAcc;
     private boolean existeEnSAC;
+    private boolean esAddFiles;
 
 }
