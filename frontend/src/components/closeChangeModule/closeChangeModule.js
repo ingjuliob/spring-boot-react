@@ -78,7 +78,7 @@ export default function CloseChangeFunc() {
     setDisable(true);
     setLoading(true);
 
-    let commonsParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonsParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, retry ? resultRequest : null);
 
     let closeChangeParams = _getCloseChangeParams(rows[0]);
