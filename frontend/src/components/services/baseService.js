@@ -52,8 +52,7 @@ const BaseService = {
             attached.arcTipodocumental = relacion.tipoDocumental;
             attached.arcEstado = "A";
             attached.arcRepoDef = "S" === relacion.temporal ? "BD" : "FN";
-            attached.isNew = true;
-            attached.operationId = transactionalRequest.commonParams.operationId;
+            attached.arcOperationId = transactionalRequest.commonParams.operationId;
             let data = new FormData();
             data.append('file', file);
             data.append('attached',
