@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import NavbarModule from '../commonsModule/navbarModule';
+import HelpModule from '../commonsModule/helpModule';
 import DialogsModule from '../commonsModule/dialogsModule';
 import ButtonsModule from '../commonsModule/buttonsModule';
 import LoadingModule from '../commonsModule/loadingModule';
@@ -102,8 +103,8 @@ export default function DischargeFunc() {
       {/* End Navbar Module */}
 
       <Container maxWidth="lg">
-        <Grid container spacing={3}>
-          <Grid item lg={12}>
+        <Grid container>
+          <Grid item lg={12} style={{width: '100%'}}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2">
@@ -150,6 +151,9 @@ export default function DischargeFunc() {
                     </Typography>
                   </Grid>
                 </Grid>
+                <br></br>
+                <HelpModule />
+                <br></br>
               </CardContent>
             </Card>
           </Grid>

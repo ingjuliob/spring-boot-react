@@ -311,8 +311,8 @@ export default function ReprintFunc() {
       {/* end snackbar */}
 
       <Container maxWidth="lg">
-        <Grid container spacing={3}>
-          <Grid item lg={12}>
+        <Grid container>
+          <Grid item lg={12} style={{width: '100%'}}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2" className={classes.paddingLine}>

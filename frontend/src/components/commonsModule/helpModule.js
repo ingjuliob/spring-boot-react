@@ -43,17 +43,6 @@ export default function CenteredGrid() {
     callAPI();
   }, [operationId, productCode, causeCode, reasonCode, companyCode]);
 
-  React.useEffect(() => {
-    window.addEventListener('beforeunload', alertUser)
-    return () => {
-      window.removeEventListener('beforeunload', alertUser)
-    }
-  }, [])
-  const alertUser = e => {
-    e.preventDefault()
-    e.returnValue = ''
-  }
-
   return (
     <div className={classes.root} style={{ backgroundColor: 'aliceblue', padding: '2%' }}>
 
