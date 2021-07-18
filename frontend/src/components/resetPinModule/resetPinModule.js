@@ -83,7 +83,7 @@ export default function DischargeFunc() {
   const printData = () => {
     setLoading(true);
 
-    BaseService.printData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    BaseService.printData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, "",
       "", "", "", resultRequest)
       .then(data => {
@@ -99,7 +99,7 @@ export default function DischargeFunc() {
 
       <Container maxWidth="lg">
         <Grid container>
-          <Grid item lg={12} style={{width: '100%'}}>
+          <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2">

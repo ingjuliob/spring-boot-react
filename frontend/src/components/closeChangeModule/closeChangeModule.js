@@ -118,7 +118,7 @@ export default function CloseChangeFunc() {
   const printData = () => {
     setLoading(true);
 
-    let commonsParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonsParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
 
     let closeChangeParams = _getCloseChangeParams(rows[0]);
@@ -160,7 +160,7 @@ export default function CloseChangeFunc() {
 
       <Container maxWidth="lg">
         <Grid container>
-          <Grid item lg={12} style={{width: '100%'}}>
+          <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2">

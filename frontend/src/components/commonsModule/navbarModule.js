@@ -39,7 +39,7 @@ export default function CenteredGrid() {
       setTipo("Reimpresión Diferida de Tarjeta Banelco");
     } else if (option === 'ReimprimirTarjeta') {
       setTipo("Reimpresión Común de Tarjeta Banelco");
-    } else if (option === 'BajaBanelco') {
+    } else if (option === 'BajaBanelco' || option === 'BajaDeTarjeta') {
       setTipo("Baja de Tarjeta Banelco");
     } else if (option === 'BlanqueoPin') {
       setTipo("Blanqueo de PIN");

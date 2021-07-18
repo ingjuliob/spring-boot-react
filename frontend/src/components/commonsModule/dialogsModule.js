@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CenteredGrid({ saveData, resultRequest, resultStatus, resultMsg, firstOpen, setFirstOpen, secondOpen, setSecondOpen, printScreen }) {
 
-  // Entry params
+    // Entry params
     let { option, origin } = useParams();
 
     // State variables
@@ -56,7 +56,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
             return <Typography gutterBottom>
                 ¿Está seguro que desea hacer una <strong variant="h5" component="h2">REIMPRESIÓN</strong> de tarjeta de débito?
             </Typography>;
-        } else if (option === 'BajaBanelco') {
+        } else if (option === 'BajaBanelco' || option === 'BajaDeTarjeta') {
             return <Typography gutterBottom>
                 ¿Está seguro que desea <strong variant="h5" component="h2">DAR DE BAJA</strong> la tarjeta de débito?
             </Typography>;
@@ -66,7 +66,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
             </Typography>;
         } else if (option === 'CambioCierre' || option === 'CambioCierreTC' || option === 'CbioCierreCartera') {
             return <Typography gutterBottom>
-                ¿Está seguro que desea <strong variant="h5" component="h2">CAMBIAR EL CIERRE DE CARTERA</strong> de la tarjeta de crédito?
+                ¿Está seguro que desea <strong variant="h5" component="h2">CAMBIAR EL CIERRE</strong> de la tarjeta de crédito?
             </Typography>;
         }
     }
@@ -106,7 +106,7 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
             </Dialog>
 
             {/* start dialog result */}
-            <Dialog fullScreen={fullScreen} open={secondOpen} onClose={handleCloseSecond} aria-labelledby="responsive-dialog-title">
+            <Dialog disableEscapeKeyDown disableBackdropClick fullScreen={fullScreen} open={secondOpen} onClose={handleCloseSecond} aria-labelledby="responsive-dialog-title">
                 <DialogTitle id="responsive-dialog-title">{"Registración"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -121,8 +121,8 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
                 <DialogActions>
                     <Button variant="contained" color="secondary" size="large" className={classes.button}
                         startIcon={<PrintIcon />} onClick={printScreen}>Imprimir</Button>
-                    <Button onClick={retrySaveData} variant="outlined" color="secondary" size="large" className={classes.buttonOutlined}
-                        startIcon={<AutorenewIcon />} style={{ display: (origin === 'BANCA' && resultStatus !== 'Resuelto') ? 'inherit' : 'none' }}>Reintentar</Button>
+                    {/* <Button onClick={retrySaveData} variant="outlined" color="secondary" size="large" className={classes.buttonOutlined}
+                        startIcon={<AutorenewIcon />} style={{ display: (origin === 'BANCA' && resultStatus !== 'Resuelto') ? 'inherit' : 'none' }}>Reintentar</Button> */}
                     <Button onClick={handleCloseSecond} variant="contained" color="secondary" size="large" className={classes.button}
                         startIcon={<CloseIcon />}>Salir</Button>
                 </DialogActions>

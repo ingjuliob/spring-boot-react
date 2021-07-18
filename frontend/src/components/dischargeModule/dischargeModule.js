@@ -83,7 +83,7 @@ export default function DischargeFunc() {
   const printData = () => {
     setLoading(true);
 
-    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
 
     let transactionalRequest = {}
@@ -104,7 +104,7 @@ export default function DischargeFunc() {
 
       <Container maxWidth="lg">
         <Grid container>
-          <Grid item lg={12} style={{width: '100%'}}>
+          <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2">

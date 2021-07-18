@@ -8,7 +8,7 @@ import SnackbarModule from '../commonsModule/snackbarModule';
 import DialogsModule from '../commonsModule/dialogsModule';
 import UploadFile from '../commonsModule/uploadFile';
 import line from '../../img/vertical-line.svg';
-import Tabs from './tabs';
+//import Tabs from './tabs';
 
 // import css
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -274,7 +274,7 @@ export default function ReprintFunc() {
 
     setLoading(true);
 
-    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
 
     let reprintTdParams = _getReprintTdParams(embozo, category, "-", selectedSucursal);
@@ -312,7 +312,7 @@ export default function ReprintFunc() {
 
       <Container maxWidth="lg">
         <Grid container>
-          <Grid item lg={12} style={{width: '100%'}}>
+          <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2" className={classes.paddingLine}>

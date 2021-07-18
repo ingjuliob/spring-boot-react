@@ -16,25 +16,44 @@ const BaseService = {
 
     async saveDataWithFiles(transactionalRequest) {
         var relaciones = transactionalRequest.commonParams.relTipoDocumentalProducto;
-        var resumen = '\n*************************************************************\nDocumentos adjuntos en la carga del SAC:\n';
-        for (const relacion of relaciones) {
-            if (relacion.files) {
-                let response = await this.uploadFile(transactionalRequest, relacion);
-                resumen = resumen + response;
+        transactionalRequest.commonParams.observation = '';
+        if (transactionalRequest.commonParams.adjuntarArchivos) {
+            console.log("Pido numero de registracion")
+            let registationResp = await this.generateRegistrationNumber(transactionalRequest.commonParams.operationId,
+                transactionalRequest.commonParams.companyCode, transactionalRequest.commonParams.causeCode);
+            transactionalRequest.commonParams.requestNumber = registationResp.message;
+            console.log("Listo numero de registracion: " + registationResp.message)
+            console.log(registationResp);
+            var resumen = '\n\n------------------------------------------------------------\n\nDocumentos adjuntos en la carga de SAC:\n\n';
+            for (const relacion of relaciones) {
+                if (relacion.files) {
+                    let response = await this.uploadFile(transactionalRequest, relacion);
+                    resumen = resumen + response;
+                }
+                console.log("Observaciones:")
+                console.log(resumen);
             }
-            console.log("Observaciones:")
-            console.log(resumen);
+            transactionalRequest.commonParams.observation = resumen;
         }
-        transactionalRequest.commonParams.observation = resumen;
         return UtilsService._call_post(UtilsService.URL() + '/transaccional/grabar', transactionalRequest);
     },
 
-    printData(transactionalRequest) {
-        return UtilsService._call_post_blob(UtilsService.URL() + '/transaccional/imprimir', transactionalRequest);
+    async printData(transactionalRequest) {
+        let response = await UtilsService._call_get(UtilsService.URL() + '/transaccional/imprimir?operationId=' + transactionalRequest.commonParams.operationId
+            + '&requestNumber=' + transactionalRequest.commonParams.requestNumber + '&opcion=' + transactionalRequest.commonParams.option
+            + '&name=' + transactionalRequest.commonParams.businessName);
+        console.log(response);
+        if (response.print.url) {
+            console.log("Abre: " + response.print.url);
+            var myWindow = window.open(response.print.url + '/log/Transfer/openPdfFile?filename='
+                + response.print.filename + '&fileExtension=' + response.print.fileExtension + '&indPath=' + response.print.path
+                + '&adicional=XXX', response.print.filename, "addressbar=0,toolbars=0,menubar=0,location=0,scrollbars=1,resizable=1,screenY=1,screenX=1,left=30,top=30,height=600,width=800");
+            myWindow.focus();
+        }
     },
 
     generateRegistrationNumber(operationId, companyCode, causeCode) {
-        return UtilsService._call_get(UtilsService.URL() + '/transaccional/generarNumeroPedido?operationId=' + operationId + '& companyCode=' + companyCode + '&causeCode=' + causeCode);
+        return UtilsService._call_get(UtilsService.URL() + '/transaccional/generarNumeroPedido?operationId=' + operationId + '&companyCode=' + companyCode + '&causeCode=' + causeCode);
     },
 
     async uploadFile(transactionalRequest, relacion) {
