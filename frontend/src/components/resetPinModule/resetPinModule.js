@@ -5,6 +5,8 @@ import HelpModule from '../commonsModule/helpModule';
 import DialogsModule from '../commonsModule/dialogsModule';
 import ButtonsModule from '../commonsModule/buttonsModule';
 import LoadingModule from '../commonsModule/loadingModule';
+import UploadFile from '../commonsModule/uploadFile';
+import DocumentalRelation from "../commonsModule/docuRelationModule";
 
 // import css
 import { makeStyles } from "@material-ui/core/styles";
@@ -47,12 +49,17 @@ export default function DischargeFunc() {
   const [resultStatus, setResultStatus] = React.useState("");
   const [resultMsg, setResultMsg] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  // Inicio Add Files (Agregar en todas las funcionalidades)
+  const [isAddFiles, setIsAddFiles] = React.useState(false);
+  const [clientRelations, setClientRelations] = React.useState([]);
+  const [productRelations, setProductRelations] = React.useState([]);
+  // Fin Add Files (Agregar en todas las funcionalidades)
 
   // Style variables
   const classes = useStyles();
 
   // Funcion para guardar la registracion generada
-  const saveData = (retry) => {
+  const saveData = async (retry) => {
     setFirstOpen(false);
     setDisable(true);
     setLoading(true);
@@ -61,19 +68,41 @@ export default function DischargeFunc() {
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, retry ? resultRequest : null);
 
     let transactionalRequest = {}
+    // Inicio Add Files (Agregar en todas las funcionalidades)
+    if (isAddFiles) {
+      commonParams.relTipoDocumentalCliente = clientRelations;
+      commonParams.relTipoDocumentalProducto = productRelations;
+      let productFiles = productRelations.filter(relation => relation.esAddFiles === true);
+      commonParams.adjuntarArchivos = productFiles.length > 0;
+    }
+    // Fin Add Files (Agregar en todas las funcionalidades)
     transactionalRequest.commonParams = commonParams;
 
-    BaseService.saveData(transactionalRequest)
-      .then(data => {
-        let pedido = data.registration.requestNumber;
-        let mensaje = data.registration.message;
-        let estado = data.registration.status;
-        setSecondOpen(true);
-        setResultRequest(pedido);
-        setResultStatus(estado);
-        setResultMsg(mensaje);
-        setLoading(false);
-      });
+    // Inicio Add Files (Agregar en todas las funcionalidades)
+    if (isAddFiles) {
+      let data = await BaseService.saveDataWithFiles(transactionalRequest);
+      let pedido = data.registration.requestNumber;
+      let mensaje = data.registration.message;
+      let estado = data.registration.status;
+      setSecondOpen(true);
+      setResultRequest(pedido);
+      setResultStatus(estado);
+      setResultMsg(mensaje);
+      setLoading(false);
+    } else {
+      BaseService.saveData(transactionalRequest)
+        .then(data => {
+          let pedido = data.registration.requestNumber;
+          let mensaje = data.registration.message;
+          let estado = data.registration.status;
+          setSecondOpen(true);
+          setResultRequest(pedido);
+          setResultStatus(estado);
+          setResultMsg(mensaje);
+          setLoading(false);
+        });
+    }
+    // Fin Add Files (Agregar en todas las funcionalidades)
   }
 
   const getConfirmation = () => {
@@ -149,6 +178,12 @@ export default function DischargeFunc() {
                 <br></br>
                 <HelpModule />
                 <br></br>
+                {/* Inicio Add Files (Agregar en todas las funcionalidades) */}
+                <DocumentalRelation isAddFiles={isAddFiles} setIsAddFiles={setIsAddFiles} setClientRelations={setClientRelations} setProductRelations={setProductRelations} />
+                {isAddFiles ?
+                  <UploadFile clientRelations={clientRelations} productRelations={productRelations}></UploadFile>
+                  : <div></div>}
+                {/* Fin Add Files (Agregar en todas las funcionalidades) */}
               </CardContent>
             </Card>
           </Grid>

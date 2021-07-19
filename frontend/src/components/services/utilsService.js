@@ -1,7 +1,7 @@
 const UtilsService = {
 
     URL() {
-        return 'http://ard032vlncap.ar.hsbc:21228/sacweb/control';
+        return 'https://art016vlncap.ar.hsbc:20259/sacweb/control';
     },
 
     _call_get(url) {
