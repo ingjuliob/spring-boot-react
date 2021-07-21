@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
   line: { width: 6, paddingRight: 15, height: 16 },
   divider: { marginTop: 25, marginBottom: 25 },
   formControl: { width: '95%' },
-  paddingLine: { padding: '0 16px' }
+  paddingLine: { padding: '0 16px' },
+  fontSmall: { fontSize: '0.6rem', margin: 0, fontWeight: 'bold' }
 
 }));
 
@@ -102,6 +103,8 @@ export default function ReprintFunc() {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [severity, setSeverity] = React.useState('');
   const [message, setMessage] = React.useState('');
+  const [nombreEmbozo, setNombreEmbozo] = React.useState('');
+  const [codigoEmbozo, setCodigoEmbozo] = React.useState('');
   // Inicio Add Files (Agregar en todas las funcionalidades)
   const [isAddFiles, setIsAddFiles] = React.useState(false);
   const [clientRelations, setClientRelations] = React.useState([]);
@@ -244,6 +247,8 @@ export default function ReprintFunc() {
                 }
               })
             });
+          setCodigoEmbozo(data.detalleTarjeta.reprint);
+          setNombreEmbozo(data.message);
         })
     }
     callAPI();
@@ -302,7 +307,7 @@ export default function ReprintFunc() {
                 </Typography>
                 <br></br>
                 <Grid container spacing={3}>
-                  <Grid item lg={5}>
+                  <Grid item lg={4}>
                     <Typography variant="caption" display="block" gutterBottom>
                       Apellido y Nombre
                     </Typography>
@@ -311,7 +316,7 @@ export default function ReprintFunc() {
                     </Typography>
                   </Grid>
 
-                  <Grid item lg={2}>
+                  <Grid item lg={3}>
                     <Typography variant="caption" display="block" gutterBottom>
                       Tipo y Nº de Documento
                     </Typography>
@@ -327,12 +332,14 @@ export default function ReprintFunc() {
                       {productNumber}
                     </Typography>
                   </Grid>
-                  <Grid item lg={2}>
+                  <Grid item lg={3}>
                     <Typography variant="caption" display="block" gutterBottom>
                       Tipo Tarjeta
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
                       P.TIT.ELECTRON
+                      <Typography className={classes.fontSmall}>{codigoEmbozo}</Typography>
+                      <Typography className={classes.fontSmall}>{nombreEmbozo}</Typography>
                     </Typography>
                   </Grid>
                 </Grid>

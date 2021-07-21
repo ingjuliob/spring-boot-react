@@ -112,10 +112,15 @@ export default function DischargeFunc() {
   const printData = () => {
     setLoading(true);
 
-    BaseService.printData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
-      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, "",
-      "", "", "", resultRequest)
+    let commonParams = UtilsService.getCommonParams(operationId, productCode, causeCode, companyCode, documentType, documentNumber, businessName, productNumber, origin,
+      user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, resultRequest);
+
+    let transactionalRequest = {}
+    transactionalRequest.commonParams = commonParams;
+
+    BaseService.printData(transactionalRequest)
       .then(data => {
+        console.log(data);
         setLoading(false);
       });
   };
