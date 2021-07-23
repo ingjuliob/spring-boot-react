@@ -164,13 +164,13 @@ export default function CloseChangeFunc() {
 
   const _getCloseChangeParams = (row) => {
     let closeChangeParams = {};
-    closeChangeParams.tipoCliente = "Titular";
-    closeChangeParams.apellidoNombre = row.cardhName;
-    closeChangeParams.nroTarjeta = row.cardNum;
-    closeChangeParams.estado = row.primAcctInfo.statDesc;
+    closeChangeParams.tipoCliente = row.tipo;
+    closeChangeParams.apellidoNombre = row.nombres;
+    closeChangeParams.nroTarjeta = row.numero;
+    closeChangeParams.estado = row.estado;
     closeChangeParams.cartera = cartera;
-    closeChangeParams.entityAdm = row.acctIdNum;
-    closeChangeParams.codeAdm = row.restrCde;
+    closeChangeParams.entityAdm = row.bancoOrigen;
+    closeChangeParams.codeAdm = row.codigoAdmin;
     return closeChangeParams;
   }
 
@@ -199,7 +199,7 @@ export default function CloseChangeFunc() {
                 <Grid container spacing={6}>
                   <Grid item lg={4}>
                     <Typography variant="caption" display="block" gutterBottom>
-                      Apellido y Nombre
+                      Titular
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
                       {businessName}
@@ -218,6 +218,8 @@ export default function CloseChangeFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
+                { rows.length > 0 ?
+                <>
                 <Grid container spacing={5}>
                   <TableContainer>
                     <Table className={classTable.table} size="small" aria-label="customized tablee">
@@ -233,11 +235,11 @@ export default function CloseChangeFunc() {
                       <TableBody>
                         {rows.map((row) =>
                           <TableRow key={row.cardNum}>
-                            <TableCell component="th" scope="row">{'Titular'}</TableCell>
-                            <TableCell align="left">{row.typeIdfcCde} {row.idfcNum}</TableCell>
-                            <TableCell align="left">{row.cardhName}</TableCell>
-                            <TableCell align="left">{row.cardNum}</TableCell>
-                            <TableCell align="left">{row.primAcctInfo.statDesc}</TableCell>
+                            <TableCell component="th" scope="row">{row.tipo}</TableCell>
+                            <TableCell align="left">{row.tipoDocumento} {row.numeroDocumento}</TableCell>
+                            <TableCell align="left">{row.nombres}</TableCell>
+                            <TableCell align="left">{row.numero}</TableCell>
+                            <TableCell align="left">{row.estado}</TableCell>
                           </TableRow>
                         )}
                       </TableBody>
@@ -262,6 +264,8 @@ export default function CloseChangeFunc() {
                     </FormControl>
                   </Grid>
                 </Grid>
+                </>
+                : <div><b>No se encontraron tarjetas operativas para el producto.</b></div> }
                 <br></br>
                 <br></br>
                 <HelpModule />
