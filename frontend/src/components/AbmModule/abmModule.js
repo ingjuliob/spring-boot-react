@@ -199,7 +199,7 @@ export default function BasicTable() {
 
                 <Typography variant="h5" component="h2">
                   <img src={line} className={classes.line} alt="logo" />
-                  Lista de débitos existentes - Cuenta: 9727435346
+                  Lista de débitos existentes - Cuenta: { productNumber}
                 </Typography>
 
                 <br></br>
@@ -228,7 +228,7 @@ export default function BasicTable() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {debitos.map((debito) => (
+                      {debitos && debitos.map((debito) => (
                         <TableData debito={debito}></TableData>
                       ))}
                     </TableBody>

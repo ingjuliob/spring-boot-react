@@ -1,4 +1,4 @@
-import BaseService from "./baseService";
+import UtilsService from "./utilsService";
 
 const AbmService = {
 
@@ -10,11 +10,11 @@ const AbmService = {
     },
 
     getConsulta(operationId, docType, document) {
-        return this._call_get(BaseService.URL() + '/transaccional/cuentas/debitos/consulta?operationId=202104301039127321234567890&docType=DNI&document=10266305'); //  + operationId + '&docType' + docType + '&document' + document
+        return this._call_get(UtilsService.URL() + '/transaccional/cuentas/debitos/consulta?operationId=' + operationId + '&docType=' + docType + '&document=' + document);
     },
     
     getEntesSubentes(operationId, cuit) {
-        return this._call_get(BaseService.URL() + '/transaccional/entes/subentes?operationId=202104301039127321234567890&cuit=20108496380'); //  + operationId + '&cuit' + cuit
+        return this._call_get(UtilsService.URL() + '/transaccional/entes/subentes?operationId=202104301039127321234567890&cuit=20108496380'); //  + operationId + '&cuit' + cuit
     },
     
     // llamadas POST

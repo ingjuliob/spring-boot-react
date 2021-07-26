@@ -142,7 +142,7 @@ export default function CloseChangeFunc() {
         })
     }
     callAPI();
-  }, [operationId, documentType, documentNumber]);
+  }, [operationId, documentType, documentNumber, productCode, productNumber]);
 
   const printData = () => {
     setLoading(true);
@@ -218,7 +218,7 @@ export default function CloseChangeFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                { rows.length > 0 ?
+                { rows && rows.length > 0 ?
                 <>
                 <Grid container spacing={5}>
                   <TableContainer>
