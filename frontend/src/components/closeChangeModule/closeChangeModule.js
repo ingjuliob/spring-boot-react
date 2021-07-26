@@ -135,7 +135,7 @@ export default function CloseChangeFunc() {
 
   React.useEffect(() => {
     async function callAPI() {
-      CloseChangeService.getTarjetas(operationId, documentType, documentNumber)
+      CloseChangeService.getTarjetas(operationId, documentType, documentNumber, productCode, productNumber)
         .then(data => {
           setRows(data.cardAccArr);
           setLoading(false);
@@ -234,7 +234,7 @@ export default function CloseChangeFunc() {
                       </TableHead>
                       <TableBody>
                         {rows.map((row) =>
-                          <TableRow key={row.cardNum}>
+                          <TableRow key={row.numero}>
                             <TableCell component="th" scope="row">{row.tipo}</TableCell>
                             <TableCell align="left">{row.tipoDocumento} {row.numeroDocumento}</TableCell>
                             <TableCell align="left">{row.nombres}</TableCell>

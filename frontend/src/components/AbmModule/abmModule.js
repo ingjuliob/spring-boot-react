@@ -14,6 +14,8 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 // icons
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 // material
 import Divider from "@material-ui/core/Divider";
@@ -31,6 +33,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
 
 // services
 import BaseService from '../services/baseService';
@@ -45,9 +48,11 @@ const useStyles = makeStyles(() => ({
   divider: { marginTop: 25, marginBottom: 25 },
   formControl: { width: '95%' },
   table: { minWidth: 700 },
-  button: { color: 'black', textTransform: 'capitalize', fontWeight: '600', cursor: 'default',
-            '&:hover': { backgroundColor: '#ededed', color: 'black' }
+  button: {
+    color: 'black', textTransform: 'capitalize', fontWeight: '600', cursor: 'default',
+    '&:hover': { backgroundColor: '#ededed', color: 'black' }
   },
+  add: { padding: '3%', fontSize: '14px', textTransform: 'uppercase' }
 
 }));
 
@@ -68,7 +73,7 @@ export default function BasicTable() {
   // Entry params
   let { operationId, option, documentType, documentNumber, businessName, contactModeCode, productCode, causeCode,
     reasonCode, companyCode, responsibleSector, registerSector, user, origin,
-    initContact, closeContact, productNumber } = useParams();
+    initContact, closeContact, productNumber, cuit } = useParams();
 
   // State variables
   const [disable, setDisable] = React.useState(false);
@@ -78,7 +83,8 @@ export default function BasicTable() {
   const [resultStatus, setResultStatus] = React.useState("");
   const [resultMsg, setResultMsg] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [rows, setRows] = React.useState([ ]);
+  const [rows, setRows] = React.useState([]);
+  const [debitos, setDebitos] = React.useState([]);
 
   // Style variables
   const classes = useStyles();
@@ -89,7 +95,7 @@ export default function BasicTable() {
     setDisable(true);
     setLoading(true);
 
-    BaseService.saveData(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
+    AbmService.saveAbm(operationId, productCode, causeCode, companyCode, documentType, documentNumber, productNumber, origin,
       user, option, contactModeCode, reasonCode, responsibleSector, registerSector, initContact, closeContact, "", "")
       .then(data => {
         let pedido = data.registration.requestNumber;
@@ -120,25 +126,29 @@ export default function BasicTable() {
 
   // Funcion para eliminar fila
   const deleteItem = (index) => {
-    console.log("index", index)
     var oldRows = [...rows];
     oldRows.splice(index, 1);
     setRows(oldRows);
   }
 
-  // Funcion hook para consultar los detalles de la tarjeta y los embozos
+  // función nueva fila
+  const addRow = () => {
+    let data = [];
+
+    data.push(createData('27-35507558/9', 262, '298479248298 - SANTIAGO VAQUIE - CUOTAS', 2446788, '$999,999.999'));
+    setRows([...rows, ...data])
+  }
+
+  // Funcion hook para consultar 
   React.useEffect(() => {
     async function callAPI() {
-      let data = [];
-
-      for (var i = 0; i < 4; i++) {
-        data.push(createData('27-35507558/9', 262, '298479248298 - SANTIAGO VAQUIE - CUOTAS', 2446788+i, '$999,999.999'))
-      }
-
-      setRows(data);
+      AbmService.getConsulta(operationId, documentType, documentNumber)
+        .then(data => {
+          setDebitos(data.debitosCta.creditCardAdhesions);
+        })
     }
     callAPI();
-  }, [ ]);
+  }, [operationId, documentType, documentNumber]);
 
   return (
     <div className={classes.root}>
@@ -195,7 +205,35 @@ export default function BasicTable() {
                 <br></br>
 
                 {/* start table data */}
-                <TableData></TableData>
+                <TableContainer component={Paper}>
+                  <Table className={classes.table} aria-label="customized table">
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>CUIT/CUIL</StyledTableCell>
+                        <StyledTableCell>Ente/Subente</StyledTableCell>
+                        <StyledTableCell>Referencia</StyledTableCell>
+                        <StyledTableCell>Cuenta</StyledTableCell>
+                        <StyledTableCell>Límite</StyledTableCell>
+                        <StyledTableCell>Importe</StyledTableCell>
+                        <StyledTableCell>
+                          <Button className={classes.button} startIcon={<EditIcon />}>
+                            Modificar
+                          </Button>
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          <Button className={classes.button} startIcon={<DeleteIcon />}>
+                            Eliminar
+                          </Button>
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {debitos.map((debito) => (
+                        <TableData debito={debito}></TableData>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
                 {/* end table data */}
 
                 <br></br>
@@ -223,20 +261,22 @@ export default function BasicTable() {
                         <StyledTableCell>Eliminar</StyledTableCell>
                       </TableRow>
                     </TableHead>
-                    <TableBody>
-                      {rows.map((row, index) => (
-
-                        <TableWithoutData row={row} deleteItem={deleteItem} index={index}></TableWithoutData>
-
-                      ))}
-                    </TableBody>
+                    {rows.length > 0 ?
+                      <TableBody>
+                        {rows.map((row, index) => (
+                          <TableWithoutData row={row} deleteItem={deleteItem} index={index} setLoading={setLoading}></TableWithoutData>
+                        ))}
+                      </TableBody>
+                      : <Typography className={classes.add} color="textSecondary">
+                        Para agregar nuevos débitos presione el botón +
+                      </Typography>}
                   </Table>
                 </TableContainer>
 
                 <br></br>
 
                 <Tooltip title="click para agregar fila" aria-label="add">
-                  <Fab color="secondary" className={classes.absolute}>
+                  <Fab color="secondary" className={classes.absolute} onClick={addRow}>
                     <AddIcon fontSize="large" />
                   </Fab>
                 </Tooltip>

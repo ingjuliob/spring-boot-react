@@ -5,6 +5,7 @@ import ReprintModule from './components/reprintModule/reprintModule';
 import DischargeModule from './components/dischargeModule/dischargeModule';
 import ResetPinModule from './components/resetPinModule/resetPinModule';
 import CloseChangeModule from './components/closeChangeModule/closeChangeModule';
+import AbmModule from './components/AbmModule/abmModule';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path={`${process.env.PUBLIC_URL}/discharge/:operationId/:option/:documentType/:documentNumber/:businessName/:contactModeCode/:productCode/:causeCode/:reasonCode/:companyCode/:responsibleSector/:registerSector/:user/:origin/:initContact/:closeContact/:productNumber`} component={Discharge} />
           <Route path={`${process.env.PUBLIC_URL}/resetPin/:operationId/:option/:documentType/:documentNumber/:businessName/:contactModeCode/:productCode/:causeCode/:reasonCode/:companyCode/:responsibleSector/:registerSector/:user/:origin/:initContact/:closeContact/:productNumber`} component={ResetPin} />
           <Route path={`${process.env.PUBLIC_URL}/closeChange/:operationId/:option/:documentType/:documentNumber/:businessName/:contactModeCode/:productCode/:causeCode/:reasonCode/:companyCode/:responsibleSector/:registerSector/:user/:origin/:initContact/:closeContact/:productNumber`} component={CloseChange} />
+          <Route path={`${process.env.PUBLIC_URL}/abm/:operationId/:option/:documentType/:documentNumber/:businessName/:contactModeCode/:productCode/:causeCode/:reasonCode/:companyCode/:responsibleSector/:registerSector/:user/:origin/:initContact/:closeContact/:productNumber`} component={ABM} />
         </Switch>
       </div>
     </Router>
@@ -38,4 +40,8 @@ function ResetPin() {
 
 function CloseChange() {
   return <CloseChangeModule></CloseChangeModule>;
+}
+
+function ABM() {
+  return <AbmModule></AbmModule>;
 }
