@@ -45,7 +45,7 @@ export default function CenteredGrid() {
       setTipo("Blanqueo de PIN");
     } else if (option === 'CambioCierre' || option === 'CambioCierreTC' || option === 'CbioCierreCartera') {
       setTipo("Cambio de Cierre TC");
-    } else if (option === 'ABM') {
+    } else if (option === 'ABMDebAutoCta') {
       setTipo("Débito Automático de Cuentas");
     }
   }, [option]);

@@ -68,6 +68,10 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
             return <Typography gutterBottom>
                 ¿Está seguro que desea <strong variant="h5" component="h2">CAMBIAR EL CIERRE</strong> de la tarjeta de crédito?
             </Typography>;
+        } else if (option === 'ABMDebAutoCta') {
+            return <Typography gutterBottom>
+                ¿Está seguro que desea <strong variant="h5" component="h2">PROCESAR</strong> los débitos automáticos en cuenta?
+            </Typography>;
         }
     }
 

@@ -303,7 +303,7 @@ export default function BasicTable() {
         {/* End Dialog */}
 
         {/* Start Buttons Module */}
-        <ButtonsModule disable={disable} getConfirmation={getConfirmation}></ButtonsModule>
+        <ButtonsModule disable={disable} getConfirmation={getConfirmation} valueButton={"Procesar"}></ButtonsModule>
         {/* End Buttons Module */}
       </Container>
     </div>
