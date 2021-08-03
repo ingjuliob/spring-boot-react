@@ -7,6 +7,7 @@ import ButtonsModule from '../commonsModule/buttonsModule';
 import LoadingModule from '../commonsModule/loadingModule';
 import UploadFile from '../commonsModule/uploadFile';
 import DocumentalRelation from "../commonsModule/docuRelationModule";
+import line from '../../img/vertical-line.svg';
 
 // import css
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,12 +25,15 @@ import BaseService from '../services/baseService';
 import UtilsService from "../services/utilsService";
 
 // start css
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
 
   root: { flexGrow: 1, borderRadius: 0 },
-  pos: { marginBottom: 12, },
-  divider: { marginTop: 25, marginBottom: 25 },
+  line: { width: 6, paddingRight: 15, height: 16 },
+  paddingLine: { padding: '0 16px', marginBottom: 5 },
+  divider: { marginTop: 10, marginBottom: 10 },
   formControl: { width: '95%' },
+  spaceText: { paddingLeft: theme.spacing(2) },
+  gutterBottom: { marginBottom: 0 }
 
 }));
 // end css
@@ -136,13 +140,14 @@ export default function DischargeFunc() {
           <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
+                  <img src={line} className={classes.line} alt="logo" />
                   Cliente
                 </Typography>
-                <br></br>
-                <Grid container spacing={6}>
+
+                <Grid container spacing={6} className={classes.spaceText}>
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Apellido y Nombre
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -151,7 +156,7 @@ export default function DischargeFunc() {
                   </Grid>
 
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Tipo y Nº de Documento
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -162,9 +167,9 @@ export default function DischargeFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                <Grid container spacing={6}>
+                <Grid container spacing={6} className={classes.spaceText}>
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Nº Banelco
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -172,7 +177,7 @@ export default function DischargeFunc() {
                     </Typography>
                   </Grid>
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Tipo Tarjeta
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -181,14 +186,14 @@ export default function DischargeFunc() {
                   </Grid>
                 </Grid>
                 <br></br>
-                <HelpModule />
-                <br></br>
                 {/* Inicio Add Files (Agregar en todas las funcionalidades) */}
                 <DocumentalRelation isAddFiles={isAddFiles} setIsAddFiles={setIsAddFiles} setClientRelations={setClientRelations} setProductRelations={setProductRelations} />
                 {isAddFiles ?
                   <UploadFile clientRelations={clientRelations} productRelations={productRelations}></UploadFile>
                   : <div></div>}
                 {/* Fin Add Files (Agregar en todas las funcionalidades) */}
+                <br></br>
+                <HelpModule />
               </CardContent>
             </Card>
           </Grid>

@@ -9,7 +9,6 @@ import DialogsModule from '../commonsModule/dialogsModule';
 import UploadFile from '../commonsModule/uploadFile';
 import DocumentalRelation from "../commonsModule/docuRelationModule";
 import line from '../../img/vertical-line.svg';
-//import Tabs from './tabs';
 
 // import css
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -40,12 +39,15 @@ import ReprintService from '../services/reprintService';
 const useStyles = makeStyles((theme) => ({
 
   root: { flexGrow: 1, borderRadius: 0 },
-  pos: { marginBottom: 12, },
   line: { width: 6, paddingRight: 15, height: 16 },
-  divider: { marginTop: 25, marginBottom: 25 },
+  divider: { marginTop: 10, marginBottom: 10 },
   formControl: { width: '95%' },
-  paddingLine: { padding: '0 16px' },
-  fontSmall: { fontSize: '0.6rem', margin: 0, fontWeight: 'bold' }
+  paddingLine: { padding: '0 16px', marginBottom: 5 },
+  fontSmall: { fontSize: '0.6rem', margin: 0, fontWeight: 'bold' },
+  paddingLeft: { paddingLeft: 10, marginLeft: 10, borderLeft: '1px solid lightgrey' },
+  flex: { display: 'flex', alignItems: 'center' },
+  spaceText: { paddingLeft: theme.spacing(2) },
+  gutterBottom: { marginBottom: 0 }
 
 }));
 
@@ -61,17 +63,18 @@ const Accordion = withStyles({
 
 const AccordionSummary = withStyles({
   root: {
-    marginBottom: -1, minHeight: 56,
-    "&$expanded": { minHeight: 56 },
+    marginBottom: -1, minHeight: 40,
+    "&$expanded": { minHeight: 40 },
   },
   content: {
-    "&$expanded": { margin: "12px 0" },
+    margin: 0,
+    "&$expanded": { margin: 0 },
   },
   expanded: {},
 })(MuiAccordionSummary);
 
 const AccordionDetails = withStyles((theme) => ({
-  root: { padding: theme.spacing(2) },
+  root: { paddingTop: theme.spacing(0), paddingLeft: theme.spacing(2) },
 }))(MuiAccordionDetails);
 // end css
 
@@ -301,61 +304,57 @@ export default function ReprintFunc() {
           <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
-                <Typography variant="h5" component="h2" className={classes.paddingLine}>
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
                   <img src={line} className={classes.line} alt="logo" />
                   Cliente
                 </Typography>
-                <br></br>
-                <Grid container spacing={3}>
+
+                <Grid container spacing={3} className={classes.spaceText}>
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Apellido y Nombre
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
+                    <Typography color="textSecondary">
                       {businessName}
                     </Typography>
                   </Grid>
 
-                  <Grid item lg={3}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                  <Grid item lg={2}>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Tipo y Nº de Documento
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
+                    <Typography color="textSecondary">
                       {documentType} - {documentNumber}
                     </Typography>
                   </Grid>
                   <Grid item lg={2}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Nº Banelco
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
+                    <Typography color="textSecondary">
                       {productNumber}
                     </Typography>
                   </Grid>
-                  <Grid item lg={3}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                  <Grid item lg={4}>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Tipo Tarjeta
                     </Typography>
-                    <Typography className={classes.pos} color="textSecondary">
+                    <Typography color="textSecondary" className={classes.flex}>
                       P.TIT.ELECTRON
-                      <Typography className={classes.fontSmall}>{codigoEmbozo}</Typography>
-                      <Typography className={classes.fontSmall}>{nombreEmbozo}</Typography>
+                      <div className={classes.paddingLeft}>
+                        <Typography className={classes.fontSmall}>{codigoEmbozo}</Typography>
+                        <Typography className={classes.fontSmall}>{nombreEmbozo}</Typography>
+                      </div>
                     </Typography>
                   </Grid>
                 </Grid>
 
                 <Divider variant="middle" className={classes.divider} />
 
-                <Typography variant="h5" component="h2" className={classes.paddingLine}>
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
                   <img src={line} className={classes.line} alt="logo" />
                   Destino
                 </Typography>
-                <br></br>
-
-                {/* start tabs */}
-                {/* <Tabs embozos={embozos} domicilioEmbozo={domicilioEmbozo} domicilioCategoria={domicilioCategoria}
-                      exteriorCategoria={exteriorCategoria} exteriorEmbozo={exteriorEmbozo}></Tabs> */}
-                {/* end tabs */}
 
                 <div>
                   <Accordion square expanded={expanded === "panelDomicilio"} key='acc-domicilio' style={{ display: showDomicilio ? 'inherit' : 'none' }}>
@@ -370,31 +369,31 @@ export default function ReprintFunc() {
                     <AccordionDetails>
                       <Grid container spacing={3}>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Domicilio
                           </Typography>
-                          <Typography className={classes.pos} color="textSecondary">
+                          <Typography color="textSecondary">
 
                           </Typography>
                         </Grid>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Embozo
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Domicilio').map(fEmbozo => (
-                              <Typography key="domicilioEmbozo" ref={domicilioEmbozo} className={classes.pos} color="textSecondary">
+                              <Typography key="domicilioEmbozo" ref={domicilioEmbozo} color="textSecondary">
                                 {fEmbozo.embozo}
                               </Typography>))
                           }
                         </Grid>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Categoría
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Domicilio').map(fEmbozo => (
-                              <Typography key="domicilioCategoria" ref={domicilioCategoria} className={classes.pos} color="textSecondary">{fEmbozo.categoria}</Typography>))
+                              <Typography key="domicilioCategoria" ref={domicilioCategoria} color="textSecondary">{fEmbozo.categoria}</Typography>))
                           }
                         </Grid>
                       </Grid>
@@ -411,32 +410,32 @@ export default function ReprintFunc() {
                     <AccordionDetails>
                       <Grid container spacing={3}>
                         <Grid item lg={3}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Sucursal
                           </Typography>
                           <FormControl className={classes.formControl}>
-                            <Select onChange={updateSelectedSucursal}>
+                            <Select onChange={updateSelectedSucursal} style={{ maxWidth: '250px', minWidth: '150px' }} >
                               {sucursales.map((sucursal) =>
                                 <MenuItem onClick={() => setDisable(false)} value={sucursal.numBranch} label={sucursal.branch}>{sucursal.branch}</MenuItem>)}
                             </Select>
                           </FormControl>
                         </Grid>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Embozo
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Sucursal').map(fEmbozo => (
-                              <Typography key="sucursalEmbozo" ref={sucursalEmbozo} className={classes.pos} color="textSecondary">{fEmbozo.embozo}</Typography>))
+                              <Typography key="sucursalEmbozo" ref={sucursalEmbozo} color="textSecondary">{fEmbozo.embozo}</Typography>))
                           }
                         </Grid>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Categoría
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Sucursal').map(fEmbozo => (
-                              <Typography key="sucursalCategoria" ref={sucursalCategoria} className={classes.pos} color="textSecondary">{fEmbozo.categoria}</Typography>))
+                              <Typography key="sucursalCategoria" ref={sucursalCategoria} color="textSecondary">{fEmbozo.categoria}</Typography>))
                           }
                         </Grid>
                       </Grid>
@@ -454,29 +453,29 @@ export default function ReprintFunc() {
                     <AccordionDetails>
                       <Grid container spacing={3}>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Exterior
                           </Typography>
-                          <Typography className={classes.pos} color="textSecondary">
+                          <Typography color="textSecondary">
 
                           </Typography>
                         </Grid>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Embozo
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Exterior').map(fEmbozo => (
-                              <Typography key="exteriorEmbozo" ref={exteriorEmbozo} className={classes.pos} color="textSecondary">{fEmbozo.embozo}</Typography>))
+                              <Typography key="exteriorEmbozo" ref={exteriorEmbozo} color="textSecondary">{fEmbozo.embozo}</Typography>))
                           }
                         </Grid>
                         <Grid item lg={2}>
-                          <Typography variant="caption" display="block" gutterBottom>
+                          <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                             Categoría
                           </Typography>
                           {
                             embozos.filter(embozo => embozo.destino === 'Exterior').map(fEmbozo => (
-                              <Typography key="exteriorCategoria" ref={exteriorCategoria} className={classes.pos} color="textSecondary">{fEmbozo.categoria}</Typography>))
+                              <Typography key="exteriorCategoria" ref={exteriorCategoria} color="textSecondary">{fEmbozo.categoria}</Typography>))
                           }
                         </Grid>
                       </Grid>
@@ -484,15 +483,15 @@ export default function ReprintFunc() {
                   </Accordion>
                 </div>
                 <br></br>
-                <HelpModule />
-                <br></br>
-
                 {/* Inicio Add Files (Agregar en todas las funcionalidades) */}
                 <DocumentalRelation isAddFiles={isAddFiles} setIsAddFiles={setIsAddFiles} setClientRelations={setClientRelations} setProductRelations={setProductRelations} />
                 {isAddFiles ?
                   <UploadFile clientRelations={clientRelations} productRelations={productRelations}></UploadFile>
                   : <div></div>}
                 {/* Fin Add Files (Agregar en todas las funcionalidades) */}
+                <br></br>
+
+                <HelpModule />
 
               </CardContent>
             </Card>

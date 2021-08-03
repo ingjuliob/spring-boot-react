@@ -137,7 +137,7 @@ export default function CloseChangeFunc() {
     async function callAPI() {
       CloseChangeService.getTarjetas(operationId, documentType, documentNumber, productCode, productNumber)
         .then(data => {
-          setRows(data.cardAccArr);
+          setRows(data.cards);
           setLoading(false);
         })
     }
@@ -218,57 +218,55 @@ export default function CloseChangeFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                { rows && rows.length > 0 ?
-                <>
-                <Grid container spacing={5}>
-                  <TableContainer>
-                    <Table className={classTable.table} size="small" aria-label="customized tablee">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="left"><strong>Tipo</strong></TableCell>
-                          <TableCell align="left"><strong>Documento</strong></TableCell>
-                          <TableCell align="left"><strong>Apellido y Nombre</strong></TableCell>
-                          <TableCell align="left"><strong>Número de Tarjeta</strong></TableCell>
-                          <TableCell align="left"><strong>Estado</strong></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.map((row) =>
-                          <TableRow key={row.numero}>
-                            <TableCell component="th" scope="row">{row.tipo}</TableCell>
-                            <TableCell align="left">{row.tipoDocumento} {row.numeroDocumento}</TableCell>
-                            <TableCell align="left">{row.nombres}</TableCell>
-                            <TableCell align="left">{row.numero}</TableCell>
-                            <TableCell align="left">{row.estado}</TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
+                {rows && rows.length > 0 ?
+                  <>
+                    <Grid container spacing={5}>
+                      <TableContainer>
+                        <Table className={classTable.table} size="small" aria-label="customized tablee">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell align="left"><strong>Tipo</strong></TableCell>
+                              <TableCell align="left"><strong>Documento</strong></TableCell>
+                              <TableCell align="left"><strong>Apellido y Nombre</strong></TableCell>
+                              <TableCell align="left"><strong>Número de Tarjeta</strong></TableCell>
+                              <TableCell align="left"><strong>Estado</strong></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {rows.map((row) =>
+                              <TableRow key={row.numero}>
+                                <TableCell component="th" scope="row">{row.tipo}</TableCell>
+                                <TableCell align="left">{row.tipoDocumento} {row.numeroDocumento}</TableCell>
+                                <TableCell align="left">{row.nombres}</TableCell>
+                                <TableCell align="left">{row.numero}</TableCell>
+                                <TableCell align="left">{row.estado}</TableCell>
+                              </TableRow>
+                            )}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
 
-                <Divider variant="middle" className={classes.divider} />
+                    <Divider variant="middle" className={classes.divider} />
 
-                <Grid container spacing={6}>
-                  <Grid item lg={2} xs={6}>
-                    <Typography variant="caption" display="block" gutterBottom>
-                      <strong>Seleccione Cartera</strong>
-                    </Typography>
-                    <FormControl className={classes.formControl}>
-                      <Select onChange={handleChange} value={cartera}>
-                        <MenuItem value={"01"}>Cartera 1</MenuItem>
-                        <MenuItem value={"02"}>Cartera 2</MenuItem>
-                        <MenuItem value={"03"}>Cartera 3</MenuItem>
-                        <MenuItem value={"04"}>Cartera 4</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-                </>
-                : <div><b>No se encontraron tarjetas operativas para el producto.</b></div> }
+                    <Grid container spacing={6}>
+                      <Grid item lg={2} xs={6}>
+                        <Typography variant="caption" display="block" gutterBottom>
+                          <strong>Seleccione Cartera</strong>
+                        </Typography>
+                        <FormControl className={classes.formControl}>
+                          <Select onChange={handleChange} value={cartera} style={{ maxWidth: '200px', minWidth: '120px' }} >
+                            <MenuItem value={"01"}>Cartera 1</MenuItem>
+                            <MenuItem value={"02"}>Cartera 2</MenuItem>
+                            <MenuItem value={"03"}>Cartera 3</MenuItem>
+                            <MenuItem value={"04"}>Cartera 4</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </>
+                  : <div><b>No se encontraron tarjetas operativas para el producto.</b></div>}
                 <br></br>
-                <br></br>
-                <HelpModule />
                 <br></br>
                 {/* Inicio Add Files (Agregar en todas las funcionalidades) */}
                 <DocumentalRelation isAddFiles={isAddFiles} setIsAddFiles={setIsAddFiles} setClientRelations={setClientRelations} setProductRelations={setProductRelations} />
@@ -276,6 +274,8 @@ export default function CloseChangeFunc() {
                   <UploadFile clientRelations={clientRelations} productRelations={productRelations}></UploadFile>
                   : <div></div>}
                 {/* Fin Add Files (Agregar en todas las funcionalidades) */}
+                <br></br>
+                <HelpModule />
               </CardContent>
             </Card>
           </Grid>

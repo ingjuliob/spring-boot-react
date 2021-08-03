@@ -5,7 +5,7 @@ import ReprintModule from './components/reprintModule/reprintModule';
 import DischargeModule from './components/dischargeModule/dischargeModule';
 import ResetPinModule from './components/resetPinModule/resetPinModule';
 import CloseChangeModule from './components/closeChangeModule/closeChangeModule';
-import AbmModule from './components/AbmModule/abmModule';
+import AbmModule from './components/abmModule/abmModule';
 
 function App() {
 

@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     secondaryHeading: { fontSize: theme.typography.pxToRem(15), color: theme.palette.text.secondary, alignSelf: 'center' }
 
 }));
+
 const Accordion = withStyles({
     root: {
         boxShadow: "none",
@@ -76,7 +77,7 @@ export default function UploadFile({ clientRelations, productRelations }) {
 
         <Accordion style={{ backgroundColor: '#f5f5f5' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-                <Typography className={classes.heading} variant="h5" component="h2">
+                <Typography className={classes.heading} variant="h6" component="h2">
                     <AttachFileIcon size="large" color="secondary" className={classes.attach} />
                     Adjuntar Archivos
                 </Typography>
@@ -84,71 +85,62 @@ export default function UploadFile({ clientRelations, productRelations }) {
             </AccordionSummary>
             <AccordionDetails>
                 <div className={classes.app}>
-                    <Card className={classes.root} variant="outlined">
-                        <CardContent>
-                            <Grid container spacing={3}>
-                                <Grid item lg={12}>
-                                    <Typography variant="h6" component="h6" className={classes.h6}>
-                                        Documentos de Cliente (ingresados desde la solapa <b>"Datos del Cliente"</b>)
-                                    </Typography>
+                    {(clientRelations.length > 0) ?
+                        <>
+                            <Card className={classes.root} variant="outlined">
+                                <CardContent>
+                                    <Grid container spacing={3}>
+                                        <Grid item lg={12} style={{ width: '100%' }}>
+                                            <Typography variant="h6" component="h6" className={classes.h6}>
+                                                Documentos de Cliente (ingresados desde la solapa <b>"Datos del Cliente"</b>)
+                                            </Typography>
 
-                                    <br></br>
-                                    {(clientRelations.length > 1) ?
-
-                                        clientRelations.map(relation => (
-                                            <>
-                                                <Grid container spacing={3} className={classes.alignItems}>
-                                                    <Grid item lg={4}>
-                                                        <Typography color="textSecondary" variant="h6" component="h6" className={relation.existeEnSAC ? classes.fontBlue : classes.fontRed}>
-                                                            <FiberManualRecordIcon className={classes.arrow} />
-                                                            {relation.tipoDocumental}
-                                                        </Typography>
-                                                    </Grid>
-                                                    {relation.existeEnSAC ?
-                                                        <Grid item lg={8}>
-                                                            <Tooltip title="El archivo ya ha sido cargado.">
-                                                                <IconButton aria-label="delete" size="small">
-                                                                    <CheckIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                            {clientRelations.map(relation => (
+                                                <>
+                                                    <Grid container spacing={3} className={classes.alignItems}>
+                                                        <Grid item xs={4}>
+                                                            <Typography color="textSecondary" variant="h6" component="h6" className={relation.existeEnSAC ? classes.fontBlue : classes.fontRed}>
+                                                                <FiberManualRecordIcon className={classes.arrow} />
+                                                                {relation.tipoDocumental}
+                                                            </Typography>
                                                         </Grid>
-                                                        :
-                                                        <Grid item lg={8}>
-                                                            <Tooltip title="El archivo aún no se ha cargado.">
-                                                                <IconButton aria-label="delete" size="small">
-                                                                    <CloseIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </Grid>}
-                                                </Grid>
-                                                <Divider variant="middle" className={classes.divider} />
-                                            </>
-
-                                        ))
-
-                                        :
-                                        <Typography>
-                                            Esta solicitud no requiere adjuntar documentos de cliente.
-                                        </Typography>
-                                    }
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <br></br>
+                                                        {relation.existeEnSAC ?
+                                                            <Grid item xs={8}>
+                                                                <Tooltip title="El archivo ya ha sido cargado.">
+                                                                    <IconButton aria-label="delete" size="small">
+                                                                        <CheckIcon />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Grid>
+                                                            :
+                                                            <Grid item xs={8}>
+                                                                <Tooltip title="El archivo aún no se ha cargado.">
+                                                                    <IconButton aria-label="delete" size="small">
+                                                                        <CloseIcon />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Grid>}
+                                                    </Grid>
+                                                    <Divider variant="middle" className={classes.divider} />
+                                                </>
+                                            ))}
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                            <br></br>
+                        </>
+                        : null}
 
                     <Card className={classes.root} variant="outlined">
                         <CardContent>
                             <Grid container spacing={3}>
-                                <Grid item lg={12}>
+                                <Grid item lg={12} style={{ width: '100%' }}>
                                     <Typography className={classes.h6} variant="h6" component="h6">
                                         Documentos de Producto
                                     </Typography>
 
-                                    <br></br>
-
-                                    {(productRelations.length > 1) ?
+                                    {(productRelations.length > 0) ?
                                         productRelations.map(relation => (
                                             <>
                                                 <DataUpload relation={relation}></DataUpload>

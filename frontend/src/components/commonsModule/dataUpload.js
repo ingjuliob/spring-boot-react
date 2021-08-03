@@ -1,5 +1,6 @@
 import React from "react";
 import Files from 'react-files'
+import CustomizedSnackbars from './snackbarModule'
 
 // material
 import Typography from "@material-ui/core/Typography";
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 // end css
 
-export default function UploadFile({ relation }) {
+export default function DataUpload({ relation }) {
 
     //   // Style variables
     const classes = useStyles();
@@ -38,6 +39,9 @@ export default function UploadFile({ relation }) {
     //   // State variables
     const [files, setFiles] = React.useState([]);
     const [attached, setAttached] = React.useState(false);
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [severity, setSeverity] = React.useState('');
+    const [message, setMessage] = React.useState('');
 
     const onFilesChange = (filesToAdd) => {
         setFiles([...files, ...filesToAdd]);
@@ -47,7 +51,15 @@ export default function UploadFile({ relation }) {
     }
 
     const onFilesError = (error, file) => {
-        console.log('error code ' + error.code + ': ' + error.message)
+        console.log('error code ' + error.code + ': ' + error.message + ': ' + (file.size / 1024))
+        setMessage(error.message)
+        if (error.message && error.message.indexOf('is too large')) {
+            var msg = 'El tamaño del archivo "' + error.message.replace(' is too large', '" supera el máximo permitido (4,00 MB)');
+            console.log(msg)
+            setMessage(msg)
+        }
+        setOpenSnackbar(true)
+        setSeverity('error')
     }
 
     const filesRemoveOne = (fileToRemove) => {
@@ -60,27 +72,39 @@ export default function UploadFile({ relation }) {
         }
     }
 
+    const getFileSize = size => {
+        console.log(size)
+        size = size < 1 ? 1 : size
+        var suffix = ""
+        if (size > 1000) {
+            suffix = " MB"
+        } else {
+            suffix = " KB"
+        }
+        var num = (+size).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return (size > 1000 ? num.substring(0, num.length - 1) : num) + suffix
+    }
     return (
         <Grid container spacing={3} className={classes.alignItems}>
-            <Grid item lg={4}>
+            <Grid item xs={4}>
                 <Typography className={attached ? classes.fontBlue : classes.fontSize} color="textSecondary" variant="h6" component="h6">
                     <FiberManualRecordIcon className={classes.arrow} />
                     {relation.tipoDocumental}
                 </Typography>
             </Grid>
-            <Grid item lg={1}>
+            <Grid item xs={1}>
                 <Files className='files-dropzone' onChange={onFilesChange} onError={onFilesError} accepts={['image/png', '.pdf', '.xls', '.xlsx', '.doc', '.docx', '.txt', '.tif', '.tiff', '.csv', '.msg']}
                     multiple maxFileSize={5000000} minFileSize={0} clickable>
                     <label htmlFor="raised-button-file">
                         <Tooltip title="click para seleccionar uno o más archivos">
-                            <IconButton variant="contained" style={{ color: '#4caf50' }} size="large" component="span">
+                            <IconButton variant="contained" style={{ color: '#4caf50', padding: '5px' }} size="large" component="span">
                                 <QueueIcon />
                             </IconButton>
                         </Tooltip>
                     </label>
                 </Files>
             </Grid>
-            <Grid item lg={7}>
+            <Grid item xs={7}>
                 {
                     files.length > 0
                         ? <div className='files-list'>
@@ -90,7 +114,7 @@ export default function UploadFile({ relation }) {
                                         <div className='files-list-item-content'>
                                             <div className='files-list-item-content-item files-list-item-content-item-1'>
                                                 <p className={classes.fontBlue}>
-                                                    {file.name} <strong>({file.sizeReadable})</strong>
+                                                    {file.name} <strong>({getFileSize(file.size / 1024)})</strong>
                                                 </p>
                                             </div>
                                         </div>
@@ -106,6 +130,8 @@ export default function UploadFile({ relation }) {
                         : <p className={classes.fontSize}>No se han seleccionado archivos.</p>
                 }
             </Grid>
+            <CustomizedSnackbars openSnackbar={openSnackbar} severity={severity} message={message} setOpenSnackbar={setOpenSnackbar}></CustomizedSnackbars>
         </Grid>
+
     )
 }
