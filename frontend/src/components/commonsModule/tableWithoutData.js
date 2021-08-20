@@ -10,7 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -36,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
 
 const StyledTableCell = withStyles((theme) => ({
 
-    head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold' },
-    body: { fontSize: 14 }
+    head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold', paddingBottom: 6, paddingTop: 6 },
+    body: { fontSize: 14, paddingBottom: 0, paddingTop: 0 }
 
 }))(TableCell);
 
@@ -72,7 +71,6 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
     const classes = useStyles();
 
     const handleChange = (e) => {
-        console.log(e.target.value);
         setDisabledLimit(false);
         setDisabledReference(false);
         if (!e.target.value) {
@@ -80,6 +78,7 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
             setDisabledReference(true);
         }
         setSelectedEnte(e.target.value);
+        row.enteSubente = e.target.value;
         enteSubentes.forEach(ente => {
             if (ente.authority === e.target.value) {
                 setMaxLongReference(ente.longReferenceN);
@@ -88,8 +87,12 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
     };
 
     const handleLimitChange = (e) => {
+        row.limitEnable = e.target.checked;
         setLimitChecked(e.target.checked);
         setShowImport(e.target.checked);
+        if (!e.target.checked) {
+            row.importe = 0;
+        }
     }
 
     const deleteDelete = () => {
@@ -100,6 +103,7 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
         setLoading(true);
         getEntesSubentes(e.target.value);
         setSelectedCuil(e.target.value);
+        row.cuitCuil = e.target.value;
     };
 
     // Funcion hook para consultar ente/subente
@@ -112,11 +116,19 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
             })
     }
 
+    const handleImporteChange = (e) => {
+        row.importe = e.target.value;
+    }
+
+    const handleReferenciaChange = (e) => {
+        row.referencia = e.target.value;
+    }
+
     return (
-        <StyledTableRow key={row.cuitCuil}>
+        <StyledTableRow>
             <StyledTableCell>
                 <form className={classes.root} noValidate autoComplete="off">
-                    <TextField id="cuit-cuil" size="small" helperText="*Ingresar" variant="outlined" onBlur={handleOnBlur} />
+                    <TextField size="small" variant="outlined" onBlur={handleOnBlur} />
                 </form>
             </StyledTableCell>
             <StyledTableCell>
@@ -128,12 +140,12 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
                             </MenuItem>)
                         }
                     </Select>
-                    <FormHelperText>*Seleccionar</FormHelperText>
                 </FormControl>
             </StyledTableCell>
             <StyledTableCell>
                 <form className={classes.root} noValidate autoComplete="off">
-                    <TextField id="referencia" size="small" helperText="*Ingresar" inputProps={{ maxLength: maxLongReference }} disabled={disabledReference} variant="outlined" />
+                    <TextField size="small" inputProps={{ maxLength: maxLongReference }}
+                        disabled={disabledReference} variant="outlined" onChange={e => handleReferenciaChange(e)} />
                 </form>
             </StyledTableCell>
             <StyledTableCell>{productNumber}</StyledTableCell>
@@ -147,7 +159,7 @@ export default function TableWithoutData({ row, deleteItem, index, setLoading })
                 </div>
                 <form className={classes.root} noValidate autoComplete="off"
                     style={{ display: showImport ? 'inherit' : 'none' }}>
-                    <TextField id="importe" size="small" variant="outlined" />
+                    <TextField size="small" variant="outlined" onChange={e => handleImporteChange(e)} />
                 </form>
             </StyledTableCell>
             <StyledTableCell>

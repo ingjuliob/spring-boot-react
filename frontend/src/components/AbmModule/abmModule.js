@@ -40,12 +40,14 @@ import BaseService from '../services/baseService';
 import AbmService from '../services/abmService';
 
 // start css
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
 
   root: { flexGrow: 1, borderRadius: 0 },
-  pos: { marginBottom: 12, },
+  paddingLine: { padding: '0 16px', marginBottom: 5 },
+  spaceText: { paddingLeft: theme.spacing(2) },
+  gutterBottom: { marginBottom: 0 },
   line: { width: 6, paddingRight: 15, height: 16 },
-  divider: { marginTop: 25, marginBottom: 25 },
+  divider: { marginTop: 10, marginBottom: 10 },
   formControl: { width: '95%' },
   table: { minWidth: 700 },
   button: {
@@ -58,14 +60,17 @@ const useStyles = makeStyles(() => ({
 
 const StyledTableCell = withStyles((theme) => ({
 
-  head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold' },
-  body: { fontSize: 14 }
+  head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold', paddingBottom: 6, paddingTop: 6 },
+  body: { fontSize: 14, paddingBottom: 5, paddingTop: 5 }
 
 }))(TableCell);
 // end css
 
-function createData(cuitCuil, enteSubente, referencia, account, limit, price) {
-  return { cuitCuil, enteSubente, referencia, account, limit, price };
+function createData(cuitCuil, enteSubente, account, limit) {
+  return {
+    cuitCuil: cuitCuil, enteSubente: enteSubente, account: account,
+    limit: limit, importe: 0, limitEnable: false, referencia: ''
+  };
 }
 
 export default function BasicTable() {
@@ -91,7 +96,17 @@ export default function BasicTable() {
 
   // Funcion para guardar la registracion generada
   const saveData = () => {
-    setFirstOpen(false);
+
+    rows.forEach(row => {
+      console.log(row)
+    })
+
+    debitos.forEach(debito => {
+      console.log(debito)
+    })
+
+
+    /* setFirstOpen(false);
     setDisable(true);
     setLoading(true);
 
@@ -106,7 +121,7 @@ export default function BasicTable() {
         setResultStatus(estado);
         setResultMsg(mensaje);
         setLoading(false);
-      });
+      }); */
   }
 
   const getConfirmation = () => {
@@ -134,8 +149,7 @@ export default function BasicTable() {
   // función nueva fila
   const addRow = () => {
     let data = [];
-
-    data.push(createData('27-35507558/9', 262, '298479248298 - SANTIAGO VAQUIE - CUOTAS', 2446788, '$999,999.999'));
+    data.push(createData('', '', productNumber, '$999,999.999'));
     setRows([...rows, ...data])
   }
 
@@ -158,17 +172,17 @@ export default function BasicTable() {
 
       <Container maxWidth="lg">
         <Grid container>
-          <Grid item lg={12} style={{width: '100%'}}>
+          <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
                   <img src={line} className={classes.line} alt="logo" />
                   Cliente
                 </Typography>
-                <br></br>
-                <Grid container spacing={6}>
+
+                <Grid container spacing={6} className={classes.spaceText}>
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Apellido y Nombre
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -177,7 +191,7 @@ export default function BasicTable() {
                   </Grid>
 
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Tipo y Nº de Documento
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -186,7 +200,7 @@ export default function BasicTable() {
                   </Grid>
 
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Nº de Cliente
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -197,33 +211,27 @@ export default function BasicTable() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                <Typography variant="h5" component="h2">
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
                   <img src={line} className={classes.line} alt="logo" />
-                  Lista de débitos existentes - Cuenta: { productNumber}
+                  Lista de débitos existentes - Cuenta: {productNumber}
                 </Typography>
-
-                <br></br>
 
                 {/* start table data */}
                 <TableContainer component={Paper}>
                   <Table className={classes.table} aria-label="customized table">
                     <TableHead>
                       <TableRow>
-                        <StyledTableCell>CUIT/CUIL</StyledTableCell>
-                        <StyledTableCell>Ente/Subente</StyledTableCell>
-                        <StyledTableCell>Referencia</StyledTableCell>
-                        <StyledTableCell>Cuenta</StyledTableCell>
-                        <StyledTableCell>Límite</StyledTableCell>
-                        <StyledTableCell>Importe</StyledTableCell>
-                        <StyledTableCell>
-                          <Button className={classes.button} startIcon={<EditIcon />}>
-                            Modificar
-                          </Button>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>CUIT/CUIL</StyledTableCell>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>Ente/Subente</StyledTableCell>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>Referencia</StyledTableCell>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>Cuenta</StyledTableCell>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>Límite</StyledTableCell>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>Importe</StyledTableCell>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>
+                          <Button className={classes.button} startIcon={<EditIcon />}>Modificar</Button>
                         </StyledTableCell>
-                        <StyledTableCell>
-                          <Button className={classes.button} startIcon={<DeleteIcon />}>
-                            Eliminar
-                          </Button>
+                        <StyledTableCell style={{ paddingTop: '1px', paddingBottom: '1px' }}>
+                          <Button className={classes.button} startIcon={<DeleteIcon />}>Eliminar</Button>
                         </StyledTableCell>
                       </TableRow>
                     </TableHead>
@@ -240,12 +248,10 @@ export default function BasicTable() {
 
                 <Divider variant="middle" className={classes.divider} />
 
-                <Typography variant="h5" component="h2">
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
                   <img src={line} className={classes.line} alt="logo" />
                   Lista de nuevos débitos a asociar
                 </Typography>
-
-                <br></br>
 
                 {/* start table without data */}
                 <TableContainer component={Paper}>

@@ -7,9 +7,10 @@ import ButtonsModule from '../commonsModule/buttonsModule';
 import LoadingModule from '../commonsModule/loadingModule';
 import UploadFile from '../commonsModule/uploadFile';
 import DocumentalRelation from "../commonsModule/docuRelationModule";
+import line from '../../img/vertical-line.svg';
 
 // import css
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 // material
 import Divider from "@material-ui/core/Divider";
@@ -27,7 +28,8 @@ import TableRow from '@material-ui/core/TableRow';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
+import InputLabel from '@material-ui/core/InputLabel';
+import Paper from '@material-ui/core/Paper';
 
 // services
 import BaseService from '../services/baseService';
@@ -38,18 +40,33 @@ import UtilsService from "../services/utilsService";
 const useStyles = makeStyles((theme) => ({
 
   root: { flexGrow: 1, borderRadius: 0 },
-  pos: { marginBottom: 12, },
-  divider: { marginTop: 25, marginBottom: 25 },
+  line: { width: 6, paddingRight: 15, height: 16 },
+  divider: { marginTop: 10, marginBottom: 10 },
+  paddingLine: { padding: '0 16px', marginBottom: 5 },
+  spaceText: { paddingLeft: theme.spacing(2) },
+  gutterBottom: { marginBottom: 0 },
   formControl: { width: '95%' },
   formControl2: { margin: theme.spacing(1), minWidth: 120 },
   selectEmpty: { marginTop: theme.spacing(2) },
 
 }));
-const tabla = makeStyles(() => ({
-  table: {
-    minWidth: 650,
+
+const StyledTableCell = withStyles((theme) => ({
+
+  head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold', paddingBottom: 6, paddingTop: 6 },
+  body: { fontSize: 14, paddingBottom: 5, paddingTop: 5 }
+
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+
+  root: {
+    '&:nth-of-type(odd)': {
+      // backgroundColor: theme.palette.action.hover,
+    },
   },
-}));
+
+}))(TableRow);
 // end css
 
 export default function CloseChangeFunc() {
@@ -69,15 +86,20 @@ export default function CloseChangeFunc() {
   const [loading, setLoading] = React.useState(true);
   const [cartera, setCartera] = React.useState("");
   const [rows, setRows] = React.useState([]);
+  const [productDescription, setProductDescription] = React.useState("");
   // Inicio Add Files (Agregar en todas las funcionalidades)
   const [isAddFiles, setIsAddFiles] = React.useState(false);
   const [clientRelations, setClientRelations] = React.useState([]);
   const [productRelations, setProductRelations] = React.useState([]);
   // Fin Add Files (Agregar en todas las funcionalidades)
+  const [carteraA, setCarteraA] = React.useState("");
+  const [carteraB, setCarteraB] = React.useState("");
+  const [carteraC, setCarteraC] = React.useState("");
+  const [carteraD, setCarteraD] = React.useState("");
+
 
   // Style variables
   const classes = useStyles();
-  const classTable = tabla();
 
   // Funcion para guardar la registracion generada
   const saveData = async (retry) => {
@@ -135,6 +157,33 @@ export default function CloseChangeFunc() {
 
   React.useEffect(() => {
     async function callAPI() {
+      if (productCode === '7') {
+        setCarteraA("11");
+        setCarteraB("12");
+        setCarteraC("13");
+        setCarteraD("14");
+      } else {
+        setCarteraA("01");
+        setCarteraB("02");
+        setCarteraC("03");
+        setCarteraD("04");
+      }
+      console.log('[' + productCode + ']')
+      if (productCode === '6') {
+        setProductDescription('TC - Visa');
+      } else if (productCode === 'V') {
+        setProductDescription('TC - Visa HEX');
+      } else if (productCode === '7') {
+        setProductDescription('TC - Mastercard');
+      } else if (productCode === 'E') {
+        setProductDescription('TC - American Express');
+      } else if (productCode === 'M') {
+        setProductDescription('TC - Mastercard HEX');
+      } else if (productCode === '9') {
+        setProductDescription('TC - ArgenCard');
+      } else if (productCode === 'L') {
+        setProductDescription('TC - Lider');
+      }
       CloseChangeService.getTarjetas(operationId, documentType, documentNumber, productCode, productNumber)
         .then(data => {
           setRows(data.cards);
@@ -169,9 +218,41 @@ export default function CloseChangeFunc() {
     closeChangeParams.nroTarjeta = row.numero;
     closeChangeParams.estado = row.estado;
     closeChangeParams.cartera = cartera;
-    closeChangeParams.entityAdm = row.bancoOrigen;
-    closeChangeParams.codeAdm = row.codigoAdmin;
+    closeChangeParams.entityAdm = _getEntAdm();
+    closeChangeParams.codeAdm = _getAdmCode();
     return closeChangeParams;
+  }
+
+  const _getAdmCode = () => {
+    if (productCode === '6') {
+      return "150";
+    } else if (productCode === 'V') {
+      return "265";
+    } else if (productCode === '7') {
+      return "031";
+    } else if (productCode === 'E') {
+      return "650";
+    } else if (productCode === 'M') {
+      return "650";
+    } else {
+      return "0";
+    }
+  }
+
+  const _getEntAdm = () => {
+    if (productCode === '6') {
+      return "VISA";
+    } else if (productCode === 'V') {
+      return "VISA HEX";
+    } else if (productCode === '7') {
+      return "MASTER";
+    } else if (productCode === 'E') {
+      return "AMEX";
+    } else if (productCode === 'M') {
+      return "MASTER";
+    } else {
+      return "";
+    }
   }
 
   const handleChange = (event, data) => {
@@ -192,13 +273,14 @@ export default function CloseChangeFunc() {
           <Grid item lg={12} style={{ width: '100%' }}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
+                  <img src={line} className={classes.line} alt="logo" />
                   Cliente
                 </Typography>
-                <br></br>
-                <Grid container spacing={6}>
+
+                <Grid container spacing={6} className={classes.spaceText}>
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Titular
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -207,7 +289,7 @@ export default function CloseChangeFunc() {
                   </Grid>
 
                   <Grid item lg={4}>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom className={classes.gutterBottom}>
                       Tipo y Nº de Documento
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
@@ -218,56 +300,56 @@ export default function CloseChangeFunc() {
 
                 <Divider variant="middle" className={classes.divider} />
 
+                <Typography variant="h6" component="h2" className={classes.paddingLine}>
+                  <img src={line} className={classes.line} alt="logo" />
+                  Lista de tarjetas - Producto: {productDescription}: {productNumber}
+                </Typography>
+
                 {rows && rows.length > 0 ?
                   <>
-                    <Grid container spacing={5}>
-                      <TableContainer>
-                        <Table className={classTable.table} size="small" aria-label="customized tablee">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="left"><strong>Tipo</strong></TableCell>
-                              <TableCell align="left"><strong>Documento</strong></TableCell>
-                              <TableCell align="left"><strong>Apellido y Nombre</strong></TableCell>
-                              <TableCell align="left"><strong>Número de Tarjeta</strong></TableCell>
-                              <TableCell align="left"><strong>Estado</strong></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {rows.map((row) =>
-                              <TableRow key={row.numero}>
-                                <TableCell component="th" scope="row">{row.tipo}</TableCell>
-                                <TableCell align="left">{row.tipoDocumento} {row.numeroDocumento}</TableCell>
-                                <TableCell align="left">{row.nombres}</TableCell>
-                                <TableCell align="left">{row.numero}</TableCell>
-                                <TableCell align="left">{row.estado}</TableCell>
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Grid>
+                    {/* start table data */}
+                    <TableContainer component={Paper}>
+                      <Table aria-label="customized table">
+                        <TableHead>
+                          <TableRow>
+                            <StyledTableCell>Tipo</StyledTableCell>
+                            <StyledTableCell>Tipo Doc.</StyledTableCell>
+                            <StyledTableCell>Nº Doc.</StyledTableCell>
+                            <StyledTableCell>Apellido y Nombre</StyledTableCell>
+                            <StyledTableCell>Número de Tarjeta</StyledTableCell>
+                            <StyledTableCell>Estado</StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {rows.map((row) =>
+                            <StyledTableRow key={row.numero}>
+                              <StyledTableCell>{row.tipo}</StyledTableCell>
+                              <StyledTableCell>{row.tipoDocumento}</StyledTableCell>
+                              <StyledTableCell>{row.numeroDocumento}</StyledTableCell>
+                              <StyledTableCell>{row.nombres}</StyledTableCell>
+                              <StyledTableCell>{row.numero}</StyledTableCell>
+                              <StyledTableCell>{row.estado}</StyledTableCell>
+                            </StyledTableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {/* end table data */}
 
-                    <Divider variant="middle" className={classes.divider} />
-
-                    <Grid container spacing={6}>
-                      <Grid item lg={2} xs={6}>
-                        <Typography variant="caption" display="block" gutterBottom>
-                          <strong>Seleccione Cartera</strong>
-                        </Typography>
-                        <FormControl className={classes.formControl}>
-                          <Select onChange={handleChange} value={cartera} style={{ maxWidth: '200px', minWidth: '120px' }} >
-                            <MenuItem value={"01"}>Cartera 1</MenuItem>
-                            <MenuItem value={"02"}>Cartera 2</MenuItem>
-                            <MenuItem value={"03"}>Cartera 3</MenuItem>
-                            <MenuItem value={"04"}>Cartera 4</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                    </Grid>
+                    <div className={classes.spaceText}>
+                      <FormControl className={classes.formControl} >
+                        <InputLabel id="demo-simple-select-label">Seleccione Cartera</InputLabel>
+                        <Select style={{ maxWidth: '200px', minWidth: '120px' }} value={cartera} onChange={handleChange}>
+                          <MenuItem value={carteraA}>Cartera {carteraA}</MenuItem>
+                          <MenuItem value={carteraB}>Cartera {carteraB}</MenuItem>
+                          <MenuItem value={carteraC}>Cartera {carteraC}</MenuItem>
+                          <MenuItem value={carteraD}>Cartera {carteraD}</MenuItem>
+                        </Select>
+                        <br></br>
+                      </FormControl>
+                    </div>
                   </>
                   : <div><b>No se encontraron tarjetas operativas para el producto.</b></div>}
-                <br></br>
-                <br></br>
                 {/* Inicio Add Files (Agregar en todas las funcionalidades) */}
                 <DocumentalRelation isAddFiles={isAddFiles} setIsAddFiles={setIsAddFiles} setClientRelations={setClientRelations} setProductRelations={setProductRelations} />
                 {isAddFiles ?

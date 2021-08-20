@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
 
 const StyledTableCell = withStyles((theme) => ({
 
-    head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold' },
-    body: { fontSize: 14 }
+    head: { backgroundColor: '#ededed', color: theme.palette.common.black, fontWeight: 'bold', paddingBottom: 6, paddingTop: 6 },
+    body: { fontSize: 14, paddingBottom: 0, paddingTop: 0 }
 
 }))(TableCell);
 
@@ -51,7 +51,6 @@ export default function BasicTable({ debito }) {
     // State variables
     const [showImport, setShowImport] = React.useState(false);
     const [modifyChecked, setModifyChecked] = React.useState(false);
-    const [deleteChecked, setDeleteChecked] = React.useState(false);
     const [limitChecked, setLimitChecked] = React.useState(false);
     const [disabledLimitCheck, setDisabledLimitCheck] = React.useState(true);
     const [disabledModifyCheck, setDisabledModifyCheck] = React.useState(false);
@@ -62,20 +61,26 @@ export default function BasicTable({ debito }) {
 
     const handleModifyChange = (e) => {
         setModifyChecked(e.target.checked);
+        debito.modifyEnable = e.target.checked;
         setDisabledLimitCheck(!e.target.checked);
-        if(!e.target.checked) {
+        if (!e.target.checked) {
             setLimitChecked(false);
             setShowImport(false);
+        } else {
+            debito.deleteEnable = false;
         }
     };
 
     const handleLimitChange = (e) => {
+        debito.limitEnable = e.target.checked;
         setLimitChecked(e.target.checked);
         setShowImport(e.target.checked);
     }
 
     const handleDeleteChange = (e) => {
-        setDeleteChecked(e.target.checked);
+        debito.deleteEnable = e.target.checked;
+        debito.modifyEnable = false;
+        debito.limitEnable = false;
         setShowImport(false);
         setModifyChecked(false);
         setLimitChecked(false);
@@ -83,6 +88,10 @@ export default function BasicTable({ debito }) {
         setDisabledModifyCheck(e.target.checked);
         setDisabledAll(e.target.checked)
     };
+
+    const handleImporteChange = (e) => {
+        debito.importe = e.target.value;
+    }
 
     return (
         <StyledTableRow key={debito.authority.cuitNumber}>
@@ -108,7 +117,7 @@ export default function BasicTable({ debito }) {
                 </div>
                 <form className={classes.root} noValidate autoComplete="off"
                     style={{ display: showImport ? 'inherit' : 'none' }}>
-                    <TextField type="number" id="importe" size="small" variant="outlined" />
+                    <TextField type="number" size="small" variant="outlined" onChange={e => handleImporteChange(e)} />
                 </form>
             </StyledTableCell>
             <StyledTableCell style={{ color: disabledAll ? '#00000042' : '#DB0011' }} align="center">
