@@ -15,6 +15,7 @@ const BaseService = {
     },
 
     async saveDataWithFiles(transactionalRequest) {
+        var subidaOK = true;
         var relaciones = transactionalRequest.commonParams.relTipoDocumentalProducto;
         transactionalRequest.commonParams.observation = '';
         if (transactionalRequest.commonParams.adjuntarArchivos) {
@@ -28,11 +29,15 @@ const BaseService = {
             for (const relacion of relaciones) {
                 if (relacion.files) {
                     let response = await this.uploadFile(transactionalRequest, relacion);
-                    resumen = resumen + response;
+                    if (!response.subidaOK) {
+                        subidaOK = false;
+                    }
+                    resumen = resumen + response.adjuntos;
                 }
                 console.log("Observaciones:")
                 console.log(resumen);
             }
+            transactionalRequest.subidaOK = subidaOK;
             transactionalRequest.commonParams.observation = resumen;
         }
         return UtilsService._call_post(UtilsService.URL() + '/transaccional/grabar', transactionalRequest);
@@ -58,6 +63,8 @@ const BaseService = {
 
     async uploadFile(transactionalRequest, relacion) {
 
+        var resp = {};
+        var subidaOK = true;
         var adjuntos = '';
         for (const file of relacion.files) {
             var attached = {}
@@ -84,11 +91,14 @@ const BaseService = {
                 adjuntos = adjuntos + attached.arcTipodocumental + ": " + attached.arcNombreOri + ' (Grabado OK)\n';
                 console.log("Enviado. " + attached.arcNombreOri);
             } else {
+                subidaOK = false;
                 adjuntos = adjuntos + attached.arcTipodocumental + ": " + attached.arcNombreOri + ' (ERROR al grabar)\n';
                 console.log("NO Enviado. " + attached.arcNombreOri);
             }
         }
-        return adjuntos;
+        resp.subidaOK = subidaOK;
+        resp.adjuntos = adjuntos;
+        return resp;
     }
 
 }

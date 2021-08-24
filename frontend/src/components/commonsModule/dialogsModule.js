@@ -32,11 +32,12 @@ const useStyles = makeStyles((theme) => ({
         margin: 10, marginTop: 25, marginBottom: 30, textTransform: 'capitalize', color: '#DB0011',
         borderRadius: '0'
     },
+    fontRed: { fontSize: '1rem', margin: 0, color: 'red', fontWeight: 'bold' }
 
 }));
 // end css
 
-export default function CenteredGrid({ saveData, resultRequest, resultStatus, resultMsg, firstOpen, setFirstOpen, secondOpen, setSecondOpen, printScreen }) {
+export default function CenteredGrid({ saveData, resultRequest, resultStatus, resultMsg, resultAddFiles, firstOpen, setFirstOpen, secondOpen, setSecondOpen, printScreen }) {
 
     // Entry params
     let { option, origin } = useParams();
@@ -119,6 +120,9 @@ export default function CenteredGrid({ saveData, resultRequest, resultStatus, re
                         </Typography>
                         <Typography gutterBottom>
                             {resultMsg}
+                        </Typography>
+                        <Typography className={classes.fontRed}>
+                            {resultAddFiles}
                         </Typography>
                     </DialogContentText>
                 </DialogContent>

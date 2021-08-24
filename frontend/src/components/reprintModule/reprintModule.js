@@ -99,6 +99,7 @@ export default function ReprintFunc() {
   const [resultRequest, setResultRequest] = React.useState("");
   const [resultStatus, setResultStatus] = React.useState("");
   const [resultMsg, setResultMsg] = React.useState("");
+  const [resultAddFiles, setResultAddFiles] = React.useState("");
   const [loading, setLoading] = React.useState(true);
   const [showDomicilio, setShowDomicilio] = React.useState(false);
   const [showSucursal, setShowSucursal] = React.useState(false);
@@ -202,22 +203,26 @@ export default function ReprintFunc() {
       let data = await BaseService.saveDataWithFiles(transactionalRequest);
       let pedido = data.registration.requestNumber;
       let mensaje = data.registration.message;
+      let mensajeAddFiles = data.registration.messageAddFiles;
       let estado = data.registration.status;
       setSecondOpen(true);
       setResultRequest(pedido);
       setResultStatus(estado);
       setResultMsg(mensaje);
+      setResultAddFiles(mensajeAddFiles);
       setLoading(false);
     } else {
       BaseService.saveData(transactionalRequest)
         .then(data => {
           let pedido = data.registration.requestNumber;
           let mensaje = data.registration.message;
+          let mensajeAddFiles = data.registration.messageAddFiles;
           let estado = data.registration.status;
           setSecondOpen(true);
           setResultRequest(pedido);
           setResultStatus(estado);
           setResultMsg(mensaje);
+          setResultAddFiles(mensajeAddFiles);
           setLoading(false);
         });
     }
@@ -504,7 +509,7 @@ export default function ReprintFunc() {
 
         {/* Start Dialog */}
         <DialogsModule saveData={saveData} resultRequest={resultRequest} resultStatus={resultStatus}
-          resultMsg={resultMsg} firstOpen={firstOpen} setFirstOpen={setFirstOpen} printScreen={printScreen}
+          resultMsg={resultMsg} resultAddFiles={resultAddFiles} firstOpen={firstOpen} setFirstOpen={setFirstOpen} printScreen={printScreen}
           secondOpen={secondOpen} setSecondOpen={setSecondOpen} openUploadFiles={openUploadFiles}
           setOpenUploadFiles={setOpenUploadFiles}></DialogsModule>
         {/* End Dialog */}
