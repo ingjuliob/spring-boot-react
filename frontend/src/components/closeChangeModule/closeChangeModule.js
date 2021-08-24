@@ -218,41 +218,9 @@ export default function CloseChangeFunc() {
     closeChangeParams.nroTarjeta = row.numero;
     closeChangeParams.estado = row.estado;
     closeChangeParams.cartera = cartera;
-    closeChangeParams.entityAdm = _getEntAdm();
-    closeChangeParams.codeAdm = _getAdmCode();
+    closeChangeParams.entityAdm = row.bancoOrigen;
+    closeChangeParams.codeAdm = row.codigoAdmin;
     return closeChangeParams;
-  }
-
-  const _getAdmCode = () => {
-    if (productCode === '6') {
-      return "150";
-    } else if (productCode === 'V') {
-      return "265";
-    } else if (productCode === '7') {
-      return "031";
-    } else if (productCode === 'E') {
-      return "650";
-    } else if (productCode === 'M') {
-      return "650";
-    } else {
-      return "0";
-    }
-  }
-
-  const _getEntAdm = () => {
-    if (productCode === '6') {
-      return "VISA";
-    } else if (productCode === 'V') {
-      return "VISA HEX";
-    } else if (productCode === '7') {
-      return "MASTER";
-    } else if (productCode === 'E') {
-      return "AMEX";
-    } else if (productCode === 'M') {
-      return "MASTER";
-    } else {
-      return "";
-    }
   }
 
   const handleChange = (event, data) => {
