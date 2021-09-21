@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/sactran/static/css/main.0e747572.chunk.css",
-    "main.js": "/sactran/static/js/main.aeaca823.chunk.js",
-    "main.js.map": "/sactran/static/js/main.aeaca823.chunk.js.map",
+    "main.js": "/sactran/static/js/main.a5d3d397.chunk.js",
+    "main.js.map": "/sactran/static/js/main.a5d3d397.chunk.js.map",
     "runtime-main.js": "/sactran/static/js/runtime-main.9df099a4.js",
     "runtime-main.js.map": "/sactran/static/js/runtime-main.9df099a4.js.map",
     "static/js/2.264892aa.chunk.js": "/sactran/static/js/2.264892aa.chunk.js",
@@ -19,6 +19,6 @@
     "static/js/runtime-main.9df099a4.js",
     "static/js/2.264892aa.chunk.js",
     "static/css/main.0e747572.chunk.css",
-    "static/js/main.aeaca823.chunk.js"
+    "static/js/main.a5d3d397.chunk.js"
   ]
 }
